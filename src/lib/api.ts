@@ -1,0 +1,131 @@
+import { createClient } from '@supabase/supabase-js'
+import type { Category, NewOrder, Order, OrderItem, OrderStatus, Product } from '../types'
+import { seedCategories, seedProducts } from './seed'
+
+const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
+const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
+
+export const supabase = url && key ? createClient(url, key) : null
+export const demoMode = !supabase
+
+const held = (s: OrderStatus | null) => s === 'confirmado' || s === 'entregue'
+/** +1 = baixar estoque, -1 = devolver, 0 = nada */
+export const stockEffect = (prev: OrderStatus | null, next: OrderStatus) => Number(held(next)) - Number(held(prev))
+
+const uid = () => crypto.randomUUID()
+const orderCode = () => 'LUM-' + Math.random().toString(36).slice(2, 7).toUpperCase()
+
+// ---------- backend local (demonstração, salva no navegador) ----------
+const ls = {
+  get<T>(k: string, fallback: T): T {
+    try {
+      const v = localStorage.getItem('lumiar:' + k)
+      return v ? (JSON.parse(v) as T) : fallback
+    } catch {
+      return fallback
+    }
+  },
+  set(k: string, v: unknown) {
+    localStorage.setItem('lumiar:' + k, JSON.stringify(v))
+  },
+}
+
+const applyLocalStock = (items: OrderItem[], sign: number) => {
+  const prods = ls.get<Product[]>('products', seedProducts)
+  for (const it of items) {
+    const p = prods.find((x) => x.id === it.id)
+    if (p) p.stock = Math.max(0, p.stock - sign * it.qty)
+  }
+  ls.set('products', prods)
+}
+
+const local = {
+  async categories() {
+    return seedCategories
+  },
+  async products(all = false) {
+    const p = ls.get<Product[]>('products', seedProducts)
+    return all ? p : p.filter((x) => x.active)
+  },
+  async saveProduct(p: Partial<Product> & { name: string }) {
+    const prods = ls.get<Product[]>('products', seedProducts)
+    const i = prods.findIndex((x) => x.id === p.id)
+    if (i >= 0) prods[i] = { ...prods[i], ...p }
+    else prods.unshift({ id: uid(), sku: '', description: '', notes: [], category_id: 'velas', price: 0, pix_price: null, stock: 0, image_url: null, featured: false, active: true, ...p } as Product)
+    ls.set('products', prods)
+  },
+  async deleteProduct(id: string) {
+    ls.set('products', ls.get<Product[]>('products', seedProducts).filter((x) => x.id !== id))
+  },
+  async createOrder(o: NewOrder) {
+    const status: OrderStatus = o.source === 'balcao' ? 'entregue' : 'novo'
+    const order: Order = { ...o, id: uid(), code: orderCode(), status, created_at: new Date().toISOString() }
+    ls.set('orders', [order, ...ls.get<Order[]>('orders', [])])
+    if (stockEffect(null, status)) applyLocalStock(o.items, 1)
+    return order
+  },
+  async orders() {
+    return ls.get<Order[]>('orders', [])
+  },
+  async setStatus(id: string, next: OrderStatus) {
+    const orders = ls.get<Order[]>('orders', [])
+    const o = orders.find((x) => x.id === id)
+    if (!o) return
+    const fx = stockEffect(o.status, next)
+    o.status = next
+    ls.set('orders', orders)
+    if (fx) applyLocalStock(o.items, fx)
+  },
+}
+
+// ---------- backend Supabase ----------
+const sb = {
+  async categories() {
+    const { data, error } = await supabase!.from('categories').select('*').order('sort')
+    if (error) throw error
+    return data as Category[]
+  },
+  async products(all = false) {
+    let q = supabase!.from('products').select('*').order('name')
+    if (!all) q = q.eq('active', true)
+    const { data, error } = await q
+    if (error) throw error
+    return data as Product[]
+  },
+  async saveProduct(p: Partial<Product> & { name: string }) {
+    const { error } = await supabase!.from('products').upsert(p.id ? p : { ...p, id: uid() })
+    if (error) throw error
+  },
+  async deleteProduct(id: string) {
+    const { error } = await supabase!.from('products').delete().eq('id', id)
+    if (error) throw error
+  },
+  async createOrder(o: NewOrder) {
+    const status: OrderStatus = o.source === 'balcao' ? 'entregue' : 'novo'
+    const order: Order = { ...o, id: uid(), code: orderCode(), status, created_at: new Date().toISOString() }
+    const { error } = await supabase!.from('orders').insert(order)
+    if (error) throw error
+    if (stockEffect(null, status)) await sb.applyStock(o.items, 1)
+    return order
+  },
+  async applyStock(items: OrderItem[], sign: number) {
+    const { error } = await supabase!.rpc('apply_stock', { p_items: items, p_sign: sign })
+    if (error) throw error
+  },
+  async orders() {
+    const { data, error } = await supabase!.from('orders').select('*').order('created_at', { ascending: false }).limit(300)
+    if (error) throw error
+    return data as Order[]
+  },
+  async setStatus(id: string, next: OrderStatus) {
+    const { data, error } = await supabase!.from('orders').select('*').eq('id', id).single()
+    if (error) throw error
+    const o = data as Order
+    const fx = stockEffect(o.status, next)
+    const { error: e2 } = await supabase!.from('orders').update({ status: next }).eq('id', id)
+    if (e2) throw e2
+    if (fx) await sb.applyStock(o.items, fx)
+  },
+}
+
+export const api = supabase ? sb : local
