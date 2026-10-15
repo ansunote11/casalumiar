@@ -3,8 +3,10 @@ import { Link } from 'react-router-dom'
 import { api, demoMode, supabase } from '../lib/api'
 import { DEMO_PIN, brl } from '../lib/config'
 import type { Category, Order, OrderStatus, Product } from '../types'
+import { Icon, Logo, type IconName } from '../components'
 
 type Tab = 'resumo' | 'pedidos' | 'balcao' | 'estoque'
+const plural = (n: number) => `${n} ${n === 1 ? 'pedido' : 'pedidos'}`
 const NEXT: Record<OrderStatus, OrderStatus[]> = {
   novo: ['confirmado', 'cancelado'],
   confirmado: ['entregue', 'cancelado'],
@@ -42,6 +44,8 @@ function Login({ onDemo }: { onDemo: () => void }) {
   }
   return (
     <div className="page login">
+      <Logo size={44} />
+      <br />
       <Link to="/" className="muted">
         ← Voltar à loja
       </Link>
@@ -49,12 +53,12 @@ function Login({ onDemo }: { onDemo: () => void }) {
       {demoMode ? (
         <>
           <p className="muted small">Modo demonstração (sem Supabase). Dados ficam só neste navegador. PIN padrão: <b>{DEMO_PIN}</b></p>
-          <input type="password" placeholder="PIN" value={a} onChange={(e) => setA(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && go()} />
+          <input type="password" aria-label="PIN" placeholder="PIN" value={a} onChange={(e) => setA(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && go()} />
         </>
       ) : (
         <>
-          <input placeholder="E-mail" value={a} onChange={(e) => setA(e.target.value)} />
-          <input type="password" placeholder="Senha" value={b} onChange={(e) => setB(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && go()} />
+          <input type="email" aria-label="E-mail" placeholder="E-mail" value={a} onChange={(e) => setA(e.target.value)} />
+          <input type="password" aria-label="Senha" placeholder="Senha" value={b} onChange={(e) => setB(e.target.value)} onKeyDown={(e) => e.key === 'Enter' && go()} />
         </>
       )}
       {err && <p className="error">{err}</p>}
@@ -80,56 +84,123 @@ function Panel({ onLogout }: { onLogout: () => void }) {
   useEffect(() => void reload(), [reload])
 
   const novos = orders.filter((o) => o.status === 'novo').length
+  const TABS: { id: Tab; label: string; icon: IconName; title: string; sub: string }[] = [
+    { id: 'resumo', label: 'Visão geral', icon: 'chart', title: 'Visão geral', sub: 'Vendas, estoque e catálogo — tudo em um só lugar.' },
+    { id: 'balcao', label: 'Vendas no balcão', icon: 'store', title: 'Venda no balcão', sub: 'Registre a venda e o estoque baixa na hora.' },
+    { id: 'pedidos', label: 'Pedidos', icon: 'orders', title: 'Pedidos', sub: 'Confirmar baixa o estoque; cancelar devolve.' },
+    { id: 'estoque', label: 'Estoque e catálogo', icon: 'box', title: 'Estoque e catálogo', sub: 'Preços, fotos, quantidades e o que aparece na loja.' },
+  ]
+  const cur = TABS.find((t) => t.id === tab)!
 
   return (
     <div className="admin">
-      <header className="admin-top">
-        <b>Casa Lumiar · Painel</b>
-        <span>
-          <Link to="/">Loja</Link> · <button className="link" onClick={onLogout}>Sair</button>
-        </span>
-      </header>
-      <div className="seg tabs">
-        {(['resumo', 'pedidos', 'balcao', 'estoque'] as Tab[]).map((t) => (
-          <button key={t} className={tab === t ? 'on' : ''} onClick={() => setTab(t)}>
-            {{ resumo: 'Resumo', pedidos: 'Pedidos', balcao: 'Balcão', estoque: 'Estoque' }[t]}
-            {t === 'pedidos' && novos > 0 && <i className="badge static">{novos}</i>}
-          </button>
-        ))}
-      </div>
-      <div className="page">
-        {tab === 'resumo' && <Summary orders={orders} products={products} />}
+      <aside className="side">
+        <div className="side-brand">
+          <Logo size={32} color="#d9b98f" />
+          <div>
+            <b>CASA LUMIAR</b>
+            <small>Painel da loja</small>
+          </div>
+        </div>
+        <nav aria-label="Seções do painel">
+          {TABS.map((t) => (
+            <button key={t.id} className={tab === t.id ? 'on' : ''} aria-current={tab === t.id ? 'page' : undefined} onClick={() => setTab(t.id)}>
+              <Icon name={t.icon} />
+              {t.label}
+              {t.id === 'pedidos' && novos > 0 && <i className="badge static">{novos}</i>}
+            </button>
+          ))}
+        </nav>
+        <div className="side-foot">
+          <small>Link do catálogo</small>
+          <span style={{ wordBreak: 'break-all' }}>{window.location.origin + window.location.pathname}</span>
+          <a href={`https://wa.me/?text=${encodeURIComponent('Conheça o catálogo da Casa Lumiar: ' + window.location.origin + window.location.pathname)}`} target="_blank" rel="noreferrer">
+            Compartilhar no WhatsApp
+          </a>
+          <Link to="/" className="link">Ver loja</Link>
+          <button className="link" onClick={onLogout}>Sair</button>
+        </div>
+      </aside>
+      <main className="main">
+        <div className="main-head">
+          <div>
+            <h1>{cur.title}</h1>
+            <p>{cur.sub}</p>
+          </div>
+          {tab === 'resumo' && (
+            <div className="actions">
+              <button className="btn light" onClick={() => setTab('estoque')}>+ Novo produto</button>
+              <button className="btn wood" onClick={() => setTab('balcao')}>Registrar venda no balcão</button>
+            </div>
+          )}
+        </div>
+        {tab === 'resumo' && <Summary orders={orders} products={products} go={setTab} />}
         {tab === 'pedidos' && <Orders orders={orders} reload={reload} />}
-        {tab === 'balcao' && <Pos products={products} reload={reload} />}
-        {tab === 'estoque' && <Stock products={products} cats={cats} reload={reload} />}
-      </div>
+        {tab === 'balcao' && <div className="panel"><Pos products={products} reload={reload} /></div>}
+        {tab === 'estoque' && <div className="panel"><Stock products={products} cats={cats} reload={reload} /></div>}
+      </main>
     </div>
   )
 }
 
-function Summary({ orders, products }: { orders: Order[]; products: Product[] }) {
+function Summary({ orders, products, go }: { orders: Order[]; products: Product[]; go: (t: Tab) => void }) {
   const today = new Date().toDateString()
   const valid = orders.filter((o) => o.status !== 'cancelado')
   const sum = (l: Order[]) => l.reduce((s, o) => s + o.total, 0)
   const todayOrders = valid.filter((o) => new Date(o.created_at).toDateString() === today)
-  const month = valid.filter((o) => new Date(o.created_at).getMonth() === new Date().getMonth())
-  const low = products.filter((p) => p.active && p.stock <= 3)
+  const now = new Date()
+  const month = valid.filter((o) => {
+    const d = new Date(o.created_at)
+    return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+  })
+  const low = products.filter((p) => p.active && p.stock <= 3).sort((a, b) => a.stock - b.stock)
   return (
     <>
       <div className="kpis">
-        <div><small>Vendas hoje</small><b>{brl(sum(todayOrders))}</b><em>{todayOrders.length} pedidos</em></div>
-        <div><small>No mês</small><b>{brl(sum(month))}</b><em>{month.length} pedidos</em></div>
-        <div><small>Novos pedidos</small><b>{orders.filter((o) => o.status === 'novo').length}</b><em>aguardando</em></div>
-        <div><small>Estoque baixo</small><b>{low.length}</b><em>≤ 3 un.</em></div>
+        <div><small>Vendas hoje</small><b>{brl(sum(todayOrders))}</b><em>{plural(todayOrders.length)} · balcão + WhatsApp</em></div>
+        <div><small>No mês</small><b>{brl(sum(month))}</b><em>{plural(month.length)}</em></div>
+        <div><small>Novos pedidos</small><b>{orders.filter((o) => o.status === 'novo').length}</b><em>aguardando confirmação</em></div>
+        <div className="hl"><small>Estoque baixo</small><b>{low.length} {low.length === 1 ? 'item' : 'itens'}</b><em>até 3 unidades</em></div>
       </div>
-      <h3>Atenção ao estoque</h3>
-      {low.length === 0 && <p className="muted">Tudo certo por aqui.</p>}
-      {low.map((p) => (
-        <div key={p.id} className="row">
-          <span>{p.name}</span>
-          <b className={p.stock === 0 ? 'bad' : ''}>{p.stock} un.</b>
+      <div className="cols" style={{ marginTop: 18 }}>
+        <section className="panel" style={{ flexGrow: 3 }}>
+          <div className="row" style={{ paddingTop: 0 }}>
+            <h3 style={{ margin: 0 }}>Pedidos recentes</h3>
+            <button className="link" onClick={() => go('pedidos')}>Ver todos</button>
+          </div>
+          {orders.length === 0 && <p className="muted">Nenhum pedido ainda. Compartilhe o link do catálogo!</p>}
+          {orders.slice(0, 6).map((o) => (
+            <div key={o.id} className="row stock-row">
+              <span className="grow">
+                {o.customer_name || 'Cliente balcão'}
+                <small> · {o.code} · {o.source === 'balcao' ? 'Balcão' : 'WhatsApp'}</small>
+              </span>
+              <b>{brl(o.total)}</b>
+              <span className={`st ${o.status}`}>{o.status}</span>
+            </div>
+          ))}
+        </section>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 18, flexGrow: 2 }}>
+          <section className="panel">
+            <h3 style={{ marginTop: 0 }}>Estoque baixo</h3>
+            {low.length === 0 && <p className="muted">Tudo certo por aqui.</p>}
+            {low.slice(0, 6).map((p) => (
+              <div key={p.id}>
+                <div className="row" style={{ paddingBottom: 6 }}>
+                  <span>{p.name}</span>
+                  <small className={p.stock === 0 ? 'bad' : ''}>{p.stock} un.</small>
+                </div>
+                <div className="bar"><i style={{ width: `${Math.max(4, (p.stock / 3) * 100)}%` }} /></div>
+              </div>
+            ))}
+          </section>
+          <section className="ai">
+            <h3><Icon name="spark" /> Assistente 24h</h3>
+            <p>Atendimento automático no WhatsApp: tira dúvidas sobre aromas, envia o link do catálogo e informa horários.</p>
+            <small>Próxima etapa — precisa de uma conta na API oficial do WhatsApp (Meta).</small>
+          </section>
         </div>
-      ))}
+      </div>
     </>
   )
 }
@@ -170,7 +241,7 @@ function Orders({ orders, reload }: { orders: Order[]; reload: () => Promise<voi
               </li>
             ))}
           </ul>
-          {o.address && <small>📍 {o.address}</small>}
+          {o.address && <small>Endereço: {o.address}</small>}
           <div className="row">
             <b>{brl(o.total)} · {o.payment}</b>
             <span className="actions">
@@ -224,10 +295,10 @@ function Pos({ products, reload }: { products: Product[]; reload: () => Promise<
     <>
       <input className="search" placeholder="Buscar produto ou SKU" value={q} onChange={(e) => setQ(e.target.value)} />
       {found.map((p) => (
-        <div key={p.id} className="row pick" onClick={() => setCart((c) => ({ ...c, [p.id]: Math.min(p.stock, (c[p.id] ?? 0) + 1) }))}>
+        <button key={p.id} className="row pick" onClick={() => setCart((c) => ({ ...c, [p.id]: Math.min(p.stock, (c[p.id] ?? 0) + 1) }))}>
           <span>{p.name}<small> · {p.stock} un.</small></span>
           <b>{brl(price(p))} +</b>
-        </div>
+        </button>
       ))}
       <h3>Venda atual</h3>
       {items.length === 0 && <p className="muted">Toque num produto para adicionar.</p>}
@@ -302,10 +373,10 @@ function Stock({ products, cats, reload }: { products: Product[]; cats: Category
       </div>
       {list.map((p) => (
         <div key={p.id} className="row stock-row">
-          <span onClick={() => setEdit(p)} className="grow">
+          <button onClick={() => setEdit(p)} className="grow">
             {p.name}
             <small> {p.sku} {!p.active && '· oculto'}</small>
-          </span>
+          </button>
           <div className="stepper sm">
             <button onClick={async () => { await api.saveProduct({ ...p, stock: Math.max(0, p.stock - 1) }); await reload() }}>−</button>
             <span className={p.stock <= 3 ? 'bad' : ''}>{p.stock}</span>

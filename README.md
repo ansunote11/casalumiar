@@ -13,7 +13,7 @@ Sem `.env`, roda em **modo demonstração**: dados ficam no navegador, painel em
 
 ## Ligar ao Supabase
 
-1. Crie um projeto no Supabase e rode [`supabase/schema.sql`](supabase/schema.sql) no SQL Editor.
+1. Crie um projeto no Supabase e rode [`supabase/schema.sql`](supabase/schema.sql) no SQL Editor; depois rode [`supabase/seed.sql`](supabase/seed.sql) para carregar os produtos iniciais.
 2. Em Authentication › Users, crie o usuário do painel (e-mail + senha).
 3. Copie `.env.example` para `.env` e preencha URL e chave `anon`.
 4. Reinicie `npm run dev`.

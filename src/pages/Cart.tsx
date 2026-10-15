@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useCart } from '../lib/cart'
-import { Thumb, TopBar } from '../components'
+import { Icon, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
 import { whatsappLink } from '../lib/whatsapp'
 import type { Delivery } from '../types'
@@ -22,6 +22,7 @@ export default function Cart() {
 
   const unit = (l: (typeof lines)[number]) => (payment === 'PIX' && l.product.pix_price ? l.product.pix_price : l.product.price)
   const total = lines.reduce((s, l) => s + unit(l) * l.qty, 0)
+  const deliveryLabel = delivery === 'entrega' ? 'Entrega' : 'Retirar na loja'
 
   const send = async () => {
     setErr('')
@@ -52,8 +53,9 @@ export default function Cart() {
   if (lines.length === 0)
     return (
       <>
-        <TopBar title="Seu pedido" />
+        <TopBar />
         <div className="page center">
+          <h2 className="page-title">Meu pedido</h2>
           <p className="muted">Seu pedido está vazio.</p>
           <Link className="btn dark" to="/produtos">
             Ver produtos
@@ -64,8 +66,11 @@ export default function Cart() {
 
   return (
     <>
-      <TopBar title="Seu pedido" />
+      <TopBar />
       <div className="page">
+        <h2 className="page-title" style={{ marginBottom: 14 }}>
+          Meu pedido
+        </h2>
         {lines.map((l) => (
           <div key={l.product.id} className="line">
             <div className="mini">
@@ -76,36 +81,46 @@ export default function Cart() {
               <small>{brl(unit(l))} cada</small>
             </div>
             <div className="stepper sm">
-              <button onClick={() => setQty(l.product.id, l.qty - 1)}>−</button>
+              <button onClick={() => setQty(l.product.id, l.qty - 1)} aria-label={`Diminuir ${l.product.name}`}>
+                −
+              </button>
               <span>{l.qty}</span>
-              <button onClick={() => setQty(l.product.id, l.qty + 1)}>+</button>
+              <button onClick={() => setQty(l.product.id, l.qty + 1)} aria-label={`Aumentar ${l.product.name}`}>
+                +
+              </button>
             </div>
           </div>
         ))}
 
         <h3>Seus dados</h3>
-        <input placeholder="Nome" value={name} onChange={(e) => setName(e.target.value)} />
-        <input placeholder="WhatsApp com DDD" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
+        <input aria-label="Seu nome" placeholder="Como podemos te chamar?" value={name} onChange={(e) => setName(e.target.value)} />
+        <input aria-label="WhatsApp com DDD" placeholder="WhatsApp com DDD" inputMode="tel" value={phone} onChange={(e) => setPhone(e.target.value)} />
 
-        <h3>Recebimento</h3>
-        <div className="seg">
+        <h3>Como prefere receber?</h3>
+        <div className="seg split">
           {(['entrega', 'retirada'] as const).map((d) => (
-            <button key={d} className={delivery === d ? 'on' : ''} onClick={() => setDelivery(d)}>
-              {d === 'entrega' ? 'Entrega' : 'Retirada'}
+            <button key={d} className={delivery === d ? 'on' : ''} aria-pressed={delivery === d} onClick={() => setDelivery(d)}>
+              {d === 'entrega' ? 'Entrega' : 'Retirar na loja'}
             </button>
           ))}
         </div>
-        {delivery === 'entrega' && <textarea placeholder="Endereço completo (rua, número, bairro, referência)" value={address} onChange={(e) => setAddress(e.target.value)} />}
+        {delivery === 'entrega' && (
+          <textarea aria-label="Endereço de entrega" placeholder="Endereço completo (rua, número, bairro, referência)" value={address} onChange={(e) => setAddress(e.target.value)} />
+        )}
 
         <h3>Pagamento</h3>
         <div className="seg">
           {PAYMENTS.map((p) => (
-            <button key={p} className={payment === p ? 'on' : ''} onClick={() => setPayment(p)}>
+            <button key={p} className={payment === p ? 'on' : ''} aria-pressed={payment === p} onClick={() => setPayment(p)}>
               {p}
             </button>
           ))}
         </div>
-        <textarea placeholder="Observações (opcional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+        <textarea aria-label="Observações" placeholder="Observações (opcional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
+
+        <div className="bubble" aria-label="Prévia da mensagem do WhatsApp">
+          {['Olá, Casa Lumiar! Quero fazer um pedido:', ...lines.map((l) => `${l.qty}x ${l.product.name}`), `Recebimento: ${deliveryLabel} · ${payment}`].join('\n')}
+        </div>
 
         {err && <p className="error">{err}</p>}
         <div className="total">
@@ -113,7 +128,8 @@ export default function Cart() {
           <b>{brl(total)}</b>
         </div>
         <button className="btn wa" disabled={busy} onClick={send}>
-          {busy ? 'Enviando…' : 'Enviar pedido no WhatsApp'}
+          <Icon name="whatsapp" />
+          {busy ? 'Enviando…' : 'Enviar pedido pelo WhatsApp'}
         </button>
         <p className="muted center small">Frete e prazo combinados com a loja pelo WhatsApp.</p>
       </div>
