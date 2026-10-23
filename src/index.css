@@ -232,14 +232,8 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .banner-dots button { width: 24px; height: 24px; border: 0; background: none; padding: 0; display: flex; align-items: center; justify-content: center; }
 .banner-dots button::before { content: ''; width: 7px; height: 7px; border-radius: 4px; background: rgba(250, 247, 241, .6); box-shadow: 0 0 3px rgba(0, 0, 0, .3); transition: width .25s; }
 .banner-dots button.on::before { width: 18px; background: #faf7f1; }
-/* Arte horizontal (3:2): aparece inteira, sem corte. Em telas muito baixas a altura é limitada para que
-   a primeira tela mostre topo + banner + título Categorias + metade dos dois primeiros botões.
-   470px = topo 79 + espaço 16 + busca 68 + 1ª linha de ícones ~125 + menu 76 + folga: o banner encolhe em telas baixas. */
-.welcome {
-  --banner-max: calc((min(100vw, 480px) - 40px) / 1.5);
-  --banner-h: clamp(160px, calc(100vh - 470px), var(--banner-max));
-}
-@supports (height: 100svh) { .welcome { --banner-h: clamp(160px, calc(100svh - 470px), var(--banner-max)); } }
+/* Banner sempre no tamanho original da arte (proporção 3:2, largura total), sem corte. */
+.welcome { --banner-h: calc((min(100vw, 480px) - 40px) / 1.5); }
 .banner img { display: block; width: 100%; object-fit: cover; object-position: center; height: var(--banner-h); }
 
 /* perfumes: inspiração, tamanhos e pirâmide olfativa */
