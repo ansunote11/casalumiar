@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { api, demoMode, supabase } from '../lib/api'
 import { DEMO_PIN, brl } from '../lib/config'
 import type { Category, Order, OrderStatus, Product } from '../types'
-import { Icon, Logo, type IconName } from '../components'
+import { BrandLockup, Icon, Logo, type IconName } from '../components'
 
 type Tab = 'resumo' | 'pedidos' | 'balcao' | 'estoque'
 const plural = (n: number) => `${n} ${n === 1 ? 'pedido' : 'pedidos'}`
@@ -96,11 +96,8 @@ function Panel({ onLogout }: { onLogout: () => void }) {
     <div className="admin">
       <aside className="side">
         <div className="side-brand">
-          <Logo size={32} color="#d9b98f" />
-          <div>
-            <b>CASA LUMIAR</b>
-            <small>Painel da loja</small>
-          </div>
+          <BrandLockup height={46} color="#d9b98f" />
+          <small>Painel da loja</small>
         </div>
         <nav aria-label="Seções do painel">
           {TABS.map((t) => (

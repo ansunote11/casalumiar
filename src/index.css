@@ -53,11 +53,12 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 
 /* boas-vindas */
 .welcome { padding-bottom: 8px; }
-.home-top { display: flex; justify-content: space-between; align-items: center; padding: 14px 14px 0; }
-.home-top .label { font-size: 12px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
-.brand { text-align: center; padding: 4px 24px 22px; display: flex; flex-direction: column; align-items: center; }
-.brand-name { font-family: var(--serif); font-size: 34px; letter-spacing: 6px; font-weight: 500; color: var(--olive-deep); margin-top: 12px; }
-.brand-sub { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); }
+.home-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; padding: 18px 14px 6px; border-bottom: 1px solid var(--line); }
+.home-top .spacer { width: 44px; flex: none; }
+.home-top .brand { margin: 0; flex: 1; display: flex; justify-content: center; min-width: 0; }
+.home-top .brand svg { max-width: 100%; height: auto; max-height: 54px; }
+.home-search { margin-top: 22px; }
+.home-search label { display: block; font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 10px; }
 .search-box { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 16px; border: 1px solid var(--line); border-radius: 25px; background: var(--card); color: var(--muted); margin-bottom: 4px; }
 .search-box input { border: 0; margin: 0; padding: 0; background: transparent; outline: none; height: 100%; }
 .section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 22px 0 12px; }
@@ -151,8 +152,8 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 /* painel */
 .admin { min-height: 100vh; background: #f4efe6; display: flex; flex-wrap: wrap; }
 .side { flex: 1 1 232px; background: var(--olive-deep); color: var(--bg); padding: 24px 16px; display: flex; flex-direction: column; gap: 24px; }
-.side-brand { display: flex; align-items: center; gap: 12px; padding: 0 8px; }
-.side-brand b { font-family: var(--serif); font-size: 19px; letter-spacing: 3px; font-weight: 500; display: block; }
+.side-brand { display: flex; flex-direction: column; gap: 8px; padding: 0 8px; }
+.side-brand svg { width: 100%; max-width: 200px; height: auto; }
 .side-brand small { font-size: 11px; color: var(--wood-light); letter-spacing: 1px; }
 .side nav { display: flex; flex-direction: column; gap: 4px; }
 .side nav button { display: flex; align-items: center; gap: 12px; text-align: left; min-height: 44px; padding: 0 14px; border-radius: 12px; border: 0; background: transparent; color: #e9e2d2; font-size: 14px; }

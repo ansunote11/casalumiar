@@ -2,8 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useCart } from '../lib/cart'
-import { STORE_NAME } from '../lib/config'
-import { Icon, Logo, catIcon } from '../components'
+import { BrandLockup, Icon, catIcon } from '../components'
 import type { Category } from '../types'
 
 export default function Welcome() {
@@ -15,37 +14,22 @@ export default function Welcome() {
 
   return (
     <main className="welcome">
-      <div className="home-top">
-        <Link to="/produtos" className="icon-btn" aria-label="Ver catálogo completo">
-          <Icon name="menu" />
-        </Link>
-        <span className="label">Catálogo</span>
+      <header className="home-top">
+        <span className="spacer" aria-hidden="true" />
+        <h1 className="brand">
+          <BrandLockup height={54} />
+        </h1>
         <Link to="/carrinho" className="icon-btn" aria-label={`Meu pedido, ${count} itens`}>
           <Icon name="bag" />
-          {count > 0 && <i className="badge" style={{ top: 6, right: 4 }}>{count}</i>}
+          {count > 0 && (
+            <i className="badge" style={{ top: 6, right: 4 }}>
+              {count}
+            </i>
+          )}
         </Link>
-      </div>
-
-      <header className="brand">
-        <Logo />
-        <h1 className="brand-name">{STORE_NAME.toUpperCase()}</h1>
-        <span className="brand-sub">Onde a luz vira essência</span>
       </header>
 
       <div className="page" style={{ paddingTop: 0 }}>
-        <form
-          role="search"
-          onSubmit={(e) => {
-            e.preventDefault()
-            nav(`/produtos${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`)
-          }}
-        >
-          <label className="search-box">
-            <Icon name="search" />
-            <input type="search" aria-label="Buscar produtos" placeholder="Buscar velas, aromas, notas…" value={q} onChange={(e) => setQ(e.target.value)} />
-          </label>
-        </form>
-
         <div className="section-head">
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>
@@ -68,6 +52,21 @@ export default function Welcome() {
             <small>e ele chega pronto no nosso WhatsApp.</small>
           </div>
         </div>
+
+        <form
+          role="search"
+          className="home-search"
+          onSubmit={(e) => {
+            e.preventDefault()
+            nav(`/produtos${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`)
+          }}
+        >
+          <label htmlFor="home-q">Procurando um aroma específico?</label>
+          <div className="search-box">
+            <Icon name="search" />
+            <input id="home-q" type="search" placeholder="Buscar velas, aromas, notas…" value={q} onChange={(e) => setQ(e.target.value)} />
+          </div>
+        </form>
 
         <Link to="/admin" className="admin-link">
           Área da loja

@@ -115,18 +115,7 @@ export function Icon({ name, className = '' }: { name: IconName; className?: str
 export const catIcon = (id: string): IconName =>
   ({ velas: 'vela', 'home-spray': 'spray', difusores: 'difusor', kits: 'kit' } as Record<string, IconName>)[id] ?? 'vela'
 
-export function Logo({ size = 58, color = '#a8743f' }: { size?: number; color?: string }) {
-  return (
-    <svg width={size} height={size * 1.1} viewBox="0 0 48 54" fill="none" stroke={color} strokeWidth="1.4" strokeLinecap="round" role="img" aria-label="Símbolo Casa Lumiar">
-      <path d="M6 52V22a18 18 0 0 1 36 0v30" />
-      <path d="M10 52V23a14 14 0 0 1 28 0v29" />
-      <path d="M24 46V22" />
-      <path d="M24 34c-5-1-8-5-8-10 5 1 8 5 8 10z" />
-      <path d="M24 30c5-1 8-5 8-10-5 1-8 5-8 10z" />
-      <path d="M24 24c-2-2-2-6 0-9 2 3 2 7 0 9z" />
-    </svg>
-  )
-}
+export { BrandLockup, Logo } from './brand'
 
 const tints: Record<string, string> = { velas: '#eadfcb', 'home-spray': '#e3e5d6', difusores: '#f0e4d2', kits: '#e6e3d3' }
 
