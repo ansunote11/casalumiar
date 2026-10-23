@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Category, NewOrder, Order, OrderItem, OrderStatus, OrderUpdate, Product } from '../types'
+import type { Category, NewOrder, Order, OrderItem, OrderStatus, OrderUpdate, Product, Ratings } from '../types'
 import { SEED_VERSION, seedCategories, seedProducts } from './seed'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
@@ -54,6 +54,17 @@ const applyLocalStock = (items: OrderItem[], sign: number) => {
 }
 
 const local = {
+  async ratings(): Promise<Ratings> {
+    const out: Ratings = {}
+    for (const r of ls.get<{ id: string; stars: number }[]>('reviews', [])) {
+      const cur = out[r.id] ?? { avg: 0, count: 0 }
+      out[r.id] = { avg: (cur.avg * cur.count + r.stars) / (cur.count + 1), count: cur.count + 1 }
+    }
+    return out
+  },
+  async rate(id: string, stars: number) {
+    ls.set('reviews', [...ls.get<{ id: string; stars: number }[]>('reviews', []), { id, stars }])
+  },
   async categories() {
     return seedCategories
   },
@@ -112,6 +123,15 @@ const local = {
 
 // ---------- backend Supabase ----------
 const sb = {
+  async ratings(): Promise<Ratings> {
+    const { data, error } = await supabase!.from('product_ratings').select('*')
+    if (error) return {} // sem a view (banco antigo) o catálogo segue sem estrelas
+    return Object.fromEntries((data as { product_id: string; avg: number; count: number }[]).map((r) => [r.product_id, { avg: r.avg, count: r.count }]))
+  },
+  async rate(id: string, stars: number) {
+    const { error } = await supabase!.from('reviews').insert({ product_id: id, stars })
+    if (error) throw error
+  },
   async categories() {
     const { data, error } = await supabase!.from('categories').select('*').order('sort')
     if (error) throw error

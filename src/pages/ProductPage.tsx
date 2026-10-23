@@ -2,9 +2,10 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { findSize, unitPrice, useCart } from '../lib/cart'
-import { Icon, Price, Thumb, TopBar } from '../components'
+import { Icon, Price, StarInput, Stars, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
-import type { Category, Product } from '../types'
+import { myVote, rememberVote } from '../lib/ratings'
+import type { Category, Product, Rating } from '../types'
 
 export default function ProductPage() {
   const { id } = useParams()
@@ -14,6 +15,26 @@ export default function ProductPage() {
   const [cats, setCats] = useState<Category[]>([])
   const [qty, setQty] = useState(1)
   const [size, setSize] = useState<string | null>(null)
+  const [rating, setRating] = useState<Rating | undefined>(undefined)
+  const [vote, setVote] = useState<number | null>(() => (id ? myVote(id) : null))
+  const [voteMsg, setVoteMsg] = useState('')
+
+  useEffect(() => {
+    if (id) void api.ratings().then((r) => setRating(r[id]))
+  }, [id])
+
+  const rate = async (n: number) => {
+    if (!id || vote) return
+    try {
+      await api.rate(id, n)
+      rememberVote(id, n)
+      setVote(n)
+      setRating((r) => ({ avg: ((r?.avg ?? 0) * (r?.count ?? 0) + n) / ((r?.count ?? 0) + 1), count: (r?.count ?? 0) + 1 }))
+      setVoteMsg('Obrigada pela avaliação!')
+    } catch {
+      setVoteMsg('Não foi possível registrar agora. Tente de novo.')
+    }
+  }
 
   useEffect(() => {
     void api.products().then((l) => {
@@ -61,6 +82,7 @@ export default function ProductPage() {
       <div className="page pdp" style={{ paddingTop: 20 }}>
         <span className="kicker">{cats.find((c) => c.id === p.category_id)?.name}</span>
         <h2>{p.name}</h2>
+        <Stars rating={rating} />
         {p.inspiration && <p className="insp">Inspirado em {p.inspiration}</p>}
         {chosen ? <Price p={{ price: chosen.price, pix_price: chosen.pix_price, sizes: [] }} /> : <Price p={p} />}
 
@@ -98,6 +120,12 @@ export default function ProductPage() {
         <h3>Descrição</h3>
         <p>{p.description || 'Aroma artesanal Casa Lumiar.'}</p>
         <p className="muted">{p.stock > 0 ? (p.stock <= 3 ? `Últimas ${p.stock} unidades` : 'Disponível') : 'Esgotado'}</p>
+
+        <div className="rate-box">
+          <h3>{vote ? 'Sua avaliação' : 'Avalie este produto'}</h3>
+          <StarInput value={vote} onRate={rate} disabled={!!vote} />
+          {voteMsg && <p className="small muted" role="status">{voteMsg}</p>}
+        </div>
 
         <div className="buybar">
           <div className="stepper">

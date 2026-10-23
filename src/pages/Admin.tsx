@@ -494,7 +494,7 @@ function Stock({ products, cats, reload }: { products: Product[]; cats: Category
         </label>
         <input placeholder="Inspirado em (opcional)" value={edit.inspiration ?? ''} onChange={(e) => setEdit({ ...edit, inspiration: e.target.value })} />
         <input placeholder="URL da foto (opcional)" value={edit.image_url ?? ''} onChange={(e) => setEdit({ ...edit, image_url: e.target.value || null })} />
-        <label className="check"><input type="checkbox" checked={!!edit.featured} onChange={(e) => setEdit({ ...edit, featured: e.target.checked })} /> Destaque (Mais pedido)</label>
+        <label className="check"><input type="checkbox" checked={!!edit.featured} onChange={(e) => setEdit({ ...edit, featured: e.target.checked })} /> Destaque (aparece em Escolhas que encantam)</label>
         <label className="check"><input type="checkbox" checked={edit.active !== false} onChange={(e) => setEdit({ ...edit, active: e.target.checked })} /> Visível no catálogo</label>
         <div className="row">
           <button className="btn dark grow" onClick={save}>Salvar</button>
@@ -551,6 +551,15 @@ function Stock({ products, cats, reload }: { products: Product[]; cats: Category
             <button aria-label="Pôr 1 no estoque" onClick={async () => { await api.saveProduct({ ...p, stock: p.stock + 1 }); await reload() }}>+</button>
           </div>
           <div className="tools" role="group" aria-label={`Ações de ${p.name}`}>
+            <button
+              className={p.featured ? 'featured on' : 'featured'}
+              aria-pressed={p.featured}
+              aria-label={p.featured ? `Tirar ${p.name} dos destaques` : `Pôr ${p.name} nos destaques`}
+              title="Destaque em Escolhas que encantam"
+              onClick={async () => { await api.saveProduct({ ...p, featured: !p.featured }); await reload() }}
+            >
+              <Icon name="star" /><span>Destaque</span>
+            </button>
             <button onClick={() => setEdit(p)} aria-label={`Editar ${p.name}`}><Icon name="edit" /><span>Editar</span></button>
             <button onClick={() => duplicate(p)} aria-label={`Duplicar ${p.name}`}><Icon name="duplicate" /><span>Duplicar</span></button>
             <button className="danger" onClick={() => remove(p)} aria-label={`Apagar ${p.name}`}><Icon name="trash" /><span>Apagar</span></button>

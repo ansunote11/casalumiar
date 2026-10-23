@@ -68,3 +68,6 @@ insert into products (sku, name, description, notes, category_id, price, pix_pri
 select 'DIF-002', 'Difusor Conforto de Criança', 'Floral macio que lembra colo e cuidado.', array['Jasmim','Rosa','Ylang Ylang']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-conforto-de-crianca.jpg'
 where not exists (select 1 from products where sku = 'DIF-002');
 update products set image_url = 'produtos/vela-lavanda-ambar.jpg' where sku = 'VEL-015' and image_url is null;
+
+-- Destaques iniciais de "Escolhas que encantam": os produtos com foto real (a loja muda no painel).
+update products set featured = (sku in ('PFE-003','PMA-009','VEL-015','DIF-002'));

@@ -46,3 +46,7 @@ export type Order = {
 export type NewOrder = Omit<Order, 'id' | 'code' | 'status' | 'created_at'>
 /** O que o painel pode alterar num pedido existente (o total é recalculado pelos itens). */
 export type OrderUpdate = Partial<Pick<Order, 'customer_name' | 'phone' | 'delivery' | 'address' | 'payment' | 'notes' | 'items'>>
+
+/** Média e quantidade de avaliações (estrelas 1 a 5) de um produto. */
+export type Rating = { avg: number; count: number }
+export type Ratings = Record<string, Rating>

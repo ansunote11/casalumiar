@@ -80,3 +80,22 @@ insert into categories (id, name, icon, sort) values
   ('velas','Velas','',4), ('home-spray','Home Spray','',5),
   ('difusores','Difusores','',6), ('kits','Kits','',7)
 on conflict (id) do update set name = excluded.name, sort = excluded.sort;
+
+-- Avaliações por estrelas (1 a 5). Qualquer visitante pode avaliar; ninguém de fora lê as linhas,
+-- só a média e a contagem pela view product_ratings. Um voto por aparelho é controlado no app.
+create table if not exists reviews (
+  id uuid primary key default gen_random_uuid(),
+  product_id uuid not null references products(id) on delete cascade,
+  stars int not null check (stars between 1 and 5),
+  created_at timestamptz not null default now()
+);
+alter table reviews enable row level security;
+drop policy if exists "public rate" on reviews;
+create policy "public rate" on reviews for insert to anon, authenticated with check (stars between 1 and 5);
+drop policy if exists "admin reviews" on reviews;
+create policy "admin reviews" on reviews for all to authenticated using (true) with check (true);
+
+create or replace view product_ratings with (security_invoker = false) as
+  select product_id, round(avg(stars)::numeric, 1)::float as avg, count(*)::int as count
+  from reviews group by product_id;
+grant select on product_ratings to anon, authenticated;

@@ -42,7 +42,7 @@ const EXTRA_DIFUSORES = ['Conforto de Criança']
 const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
   const base = { notes, description, image_url: null, active: true, sizes: [], inspiration: '', pyramid: null }
   const list: Product[] = [
-    { ...base, id: `vela-${i}`, sku: `VEL-${String(i + 1).padStart(3, '0')}`, name: `Vela ${name}`, category_id: 'velas', price: 62.5, pix_price: 50, stock: 12, featured: i < 4 },
+    { ...base, id: `vela-${i}`, sku: `VEL-${String(i + 1).padStart(3, '0')}`, name: `Vela ${name}`, category_id: 'velas', price: 62.5, pix_price: 50, stock: 12, featured: false },
   ]
   if (i % 2 === 0)
     list.push({ ...base, id: `spray-${i}`, sku: `SPR-${String(i + 1).padStart(3, '0')}`, name: `Home Spray ${name}`, category_id: 'home-spray', price: 39.9, pix_price: 35, stock: 8, featured: false })
@@ -51,7 +51,10 @@ const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
   return list.map((p) => (PHOTOS[p.name] ? { ...p, image_url: PHOTOS[p.name] } : p))
 })
 
-export const seedProducts: Product[] = [...seedPerfumes, ...aromas]
+// Destaques iniciais (Escolhas que encantam): os produtos com foto real. A loja muda no painel.
+const FEATURED = ['Rosa Majestade', 'Magnata', 'Vela Lavanda Âmbar', 'Difusor Conforto de Criança']
+
+export const seedProducts: Product[] = [...seedPerfumes, ...aromas].map((p) => ({ ...p, featured: FEATURED.includes(p.name) }))
 
 // Muda quando a lista inicial muda, para o modo demonstração recarregar os produtos.
-export const SEED_VERSION = 3
+export const SEED_VERSION = 4

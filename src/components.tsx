@@ -100,6 +100,7 @@ const paths: Record<string, ReactNode> = {
     </>
   ),
   spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />,
+  star: <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9z" />,
   // ações do painel
   edit: <path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" />,
   copy: (
@@ -226,5 +227,37 @@ export function CartBar() {
         Ver pedido <Icon name="arrow" />
       </span>
     </Link>
+  )
+}
+
+/** Média de estrelas (só leitura). Some quando ainda não há avaliações. */
+export function Stars({ rating, small }: { rating?: { avg: number; count: number }; small?: boolean }) {
+  if (!rating?.count) return null
+  const full = Math.round(rating.avg)
+  return (
+    <span
+      className={`stars${small ? ' sm' : ''}`}
+      aria-label={`Nota ${rating.avg.toFixed(1).replace('.', ',')} de 5, ${rating.count} ${rating.count === 1 ? 'avaliação' : 'avaliações'}`}
+    >
+      {[1, 2, 3, 4, 5].map((n) => (
+        <Icon key={n} name="star" className={n <= full ? 'on' : ''} />
+      ))}
+      <small>
+        {rating.avg.toFixed(1).replace('.', ',')} ({rating.count})
+      </small>
+    </span>
+  )
+}
+
+/** Escolha de 1 a 5 estrelas para avaliar um produto. */
+export function StarInput({ value, onRate, disabled }: { value: number | null; onRate: (n: number) => void; disabled?: boolean }) {
+  return (
+    <div className="star-input" role="radiogroup" aria-label="Sua nota">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button key={n} role="radio" aria-checked={value === n} aria-label={`${n} ${n === 1 ? 'estrela' : 'estrelas'}`} disabled={disabled} className={value && n <= value ? 'on' : ''} onClick={() => onRate(n)}>
+          <Icon name="star" />
+        </button>
+      ))}
+    </div>
   )
 }

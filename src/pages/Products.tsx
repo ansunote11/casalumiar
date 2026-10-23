@@ -2,8 +2,8 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useCart } from '../lib/cart'
-import { CartBar, Icon, Price, Thumb, TopBar } from '../components'
-import type { Category, Product } from '../types'
+import { CartBar, Icon, Price, Stars, Thumb, TopBar } from '../components'
+import type { Category, Product, Ratings } from '../types'
 
 export default function Products() {
   const [params, setParams] = useSearchParams()
@@ -16,9 +16,12 @@ export default function Products() {
   // uma busca nova vinda de um link (ex.: banner) substitui o que estava digitado
   useEffect(() => setQ(urlQ), [urlQ])
 
+  const [ratings, setRatings] = useState<Ratings>({})
+
   useEffect(() => {
     void api.categories().then(setCats)
     void api.products().then(setProds)
+    void api.ratings().then(setRatings)
   }, [])
 
   const list = useMemo(() => {
@@ -57,9 +60,10 @@ export default function Products() {
           {list.map((p) => (
             <article key={p.id} className="card">
               <Link to={`/produto/${p.id}`}>
-                {p.featured && <span className="tag">Mais pedido</span>}
+                {p.featured && <span className="tag">Destaque</span>}
                 <Thumb p={p} />
                 <h4>{p.name}</h4>
+                <Stars rating={ratings[p.id]} small />
                 <p className="notes">{p.notes.slice(0, 3).join(' · ')}</p>
               </Link>
               <div className="card-foot">

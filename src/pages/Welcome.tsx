@@ -4,17 +4,22 @@ import { api } from '../lib/api'
 import { BANNERS, WHATSAPP } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
-import { CategoryRail } from '../CategoryRail'
+import { CategoryIcons, Highlights } from '../HomeSections'
 import { BannerCarousel } from '../BannerCarousel'
-import type { Category } from '../types'
-
+import type { Category, Product, Ratings } from '../types'
 
 export default function Welcome() {
   const [cats, setCats] = useState<Category[]>([])
+  const [products, setProducts] = useState<Product[]>([])
+  const [ratings, setRatings] = useState<Ratings>({})
   const [q, setQ] = useState('')
   const nav = useNavigate()
   const { count } = useCart()
-  useEffect(() => void api.categories().then(setCats), [])
+  useEffect(() => {
+    void api.categories().then(setCats)
+    void api.products().then(setProducts)
+    void api.ratings().then(setRatings)
+  }, [])
 
   return (
     <main className="welcome">
@@ -56,13 +61,10 @@ export default function Welcome() {
           </label>
         </form>
 
-        <div className="section-head">
-          <h2>Categorias</h2>
-          <Link to="/produtos">Ver tudo</Link>
-        </div>
+        <CategoryIcons cats={cats} />
       </div>
 
-      <CategoryRail cats={cats} />
+      <Highlights products={products} ratings={ratings} cats={cats} />
 
       <div className="page" style={{ paddingTop: 0 }}>
         <a className="wa-button" href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Olá, Casa Lumiar! Gostaria de atendimento.')}`} target="_blank" rel="noreferrer">
