@@ -11,7 +11,11 @@ npm run dev
 
 Sem `.env`, roda em **modo demonstração**: dados ficam no navegador, painel em `/#/admin` com PIN `lumiar`.
 
-## Ligar ao Supabase
+## Supabase
+
+O site publicado já está ligado ao projeto `upfxtwbyhbyzyhbplght` pelo arquivo [`.env.production`](.env.production) (só a URL e a *publishable key*, que são públicas). `npm run dev` continua em modo demonstração.
+
+### Ligar a outro projeto Supabase
 
 1. Crie um projeto no Supabase e rode [`supabase/schema.sql`](supabase/schema.sql) no SQL Editor; depois rode [`supabase/seed.sql`](supabase/seed.sql) para carregar os produtos iniciais.
 2. Em Authentication › Users, crie o usuário do painel (e-mail + senha).
