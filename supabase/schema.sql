@@ -76,6 +76,7 @@ end $$;
 
 insert into categories (id, name, icon, sort) values
   ('perfumes-femininos','Perfumes Femininos','',1), ('perfumes-masculinos','Perfumes Masculinos','',2),
-  ('velas','Velas','',3), ('home-spray','Home Spray','',4),
-  ('difusores','Difusores','',5), ('kits','Kits','',6)
+  ('body-splash','Body Splash','',3),
+  ('velas','Velas','',4), ('home-spray','Home Spray','',5),
+  ('difusores','Difusores','',6), ('kits','Kits','',7)
 on conflict (id) do update set name = excluded.name, sort = excluded.sort;

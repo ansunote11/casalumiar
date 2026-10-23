@@ -41,7 +41,7 @@ export default function Welcome() {
       )}
       </div>
 
-      <div className="page" style={{ paddingTop: 0 }}>
+      <div className="page" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <div className="section-head">
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>

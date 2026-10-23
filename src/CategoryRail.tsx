@@ -3,8 +3,16 @@ import { Link } from 'react-router-dom'
 import { Icon, catIcon } from './components'
 import type { Category } from './types'
 
-// Imagens geradas no Canva (Dream Lab), em public/categorias/<id>.png
-const CAT_IMAGES = ['perfumes-femininos', 'perfumes-masculinos', 'velas', 'home-spray', 'difusores', 'kits']
+// Foto de cada categoria em public/categorias/. .jpg = foto real do produto; .png = imagem do Canva (Dream Lab).
+const CAT_IMAGES: Record<string, string> = {
+  'perfumes-femininos': 'perfumes-femininos.jpg',
+  'perfumes-masculinos': 'perfumes-masculinos.jpg',
+  'body-splash': 'body-splash.jpg',
+  velas: 'velas.jpg',
+  'home-spray': 'home-spray.png',
+  difusores: 'difusores.jpg',
+  kits: 'kits.png',
+}
 const SPEED = 28 // px por segundo
 const RESUME_AFTER = 2500 // ms parado depois que a pessoa solta
 
@@ -87,8 +95,8 @@ export function CategoryRail({ cats }: { cats: Category[] }) {
       tabIndex={copy ? -1 : undefined}
       draggable={false}
     >
-      {CAT_IMAGES.includes(c.id) ? (
-        <img src={`${import.meta.env.BASE_URL}categorias/${c.id}.png`} alt="" loading="lazy" draggable={false} />
+      {CAT_IMAGES[c.id] ? (
+        <img src={`${import.meta.env.BASE_URL}categorias/${CAT_IMAGES[c.id]}`} alt="" loading="lazy" draggable={false} />
       ) : (
         <Icon name={catIcon(c.id)} />
       )}

@@ -4,10 +4,11 @@ import { seedPerfumes } from './perfumes'
 export const seedCategories: Category[] = [
   { id: 'perfumes-femininos', name: 'Perfumes Femininos', icon: '', sort: 1 },
   { id: 'perfumes-masculinos', name: 'Perfumes Masculinos', icon: '', sort: 2 },
-  { id: 'velas', name: 'Velas', icon: '', sort: 3 },
-  { id: 'home-spray', name: 'Home Spray', icon: '', sort: 4 },
-  { id: 'difusores', name: 'Difusores', icon: '', sort: 5 },
-  { id: 'kits', name: 'Kits', icon: '', sort: 6 },
+  { id: 'body-splash', name: 'Body Splash', icon: '', sort: 3 },
+  { id: 'velas', name: 'Velas', icon: '', sort: 4 },
+  { id: 'home-spray', name: 'Home Spray', icon: '', sort: 5 },
+  { id: 'difusores', name: 'Difusores', icon: '', sort: 6 },
+  { id: 'kits', name: 'Kits', icon: '', sort: 7 },
 ]
 
 // Fragrâncias do documento de identidade. Preços de Home Spray/Difusor/Kit são provisórios.
@@ -30,6 +31,14 @@ const frag: [string, string[], string][] = [
   ['Bosque Boreal', ['Campanula', 'Lítsea cubeba', 'Eucalipto globulus', 'Cedro', 'Almíscar'], 'Floresta fria: verde, amadeirado e limpo.'],
 ]
 
+// Fotos reais dos produtos (public/produtos/)
+const PHOTOS: Record<string, string> = {
+  'Vela Lavanda Âmbar': 'produtos/vela-lavanda-ambar.jpg',
+  'Difusor Conforto de Criança': 'produtos/difusor-conforto-de-crianca.jpg',
+}
+// Difusores que existem além da regra geral (i % 3)
+const EXTRA_DIFUSORES = ['Conforto de Criança']
+
 const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
   const base = { notes, description, image_url: null, active: true, sizes: [], inspiration: '', pyramid: null }
   const list: Product[] = [
@@ -37,12 +46,12 @@ const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
   ]
   if (i % 2 === 0)
     list.push({ ...base, id: `spray-${i}`, sku: `SPR-${String(i + 1).padStart(3, '0')}`, name: `Home Spray ${name}`, category_id: 'home-spray', price: 39.9, pix_price: 35, stock: 8, featured: false })
-  if (i % 3 === 0)
+  if (i % 3 === 0 || EXTRA_DIFUSORES.includes(name))
     list.push({ ...base, id: `dif-${i}`, sku: `DIF-${String(i + 1).padStart(3, '0')}`, name: `Difusor ${name}`, category_id: 'difusores', price: 54.9, pix_price: 48, stock: 6, featured: false })
-  return list
+  return list.map((p) => (PHOTOS[p.name] ? { ...p, image_url: PHOTOS[p.name] } : p))
 })
 
 export const seedProducts: Product[] = [...seedPerfumes, ...aromas]
 
 // Muda quando a lista inicial muda, para o modo demonstração recarregar os produtos.
-export const SEED_VERSION = 2
+export const SEED_VERSION = 3

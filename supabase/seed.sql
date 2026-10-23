@@ -62,3 +62,9 @@ select v.* from (values
   ('PMA-010', 'Sultão Intenso', 'Uma fragrância intensa, poderosa e marcante, criada para transmitir força, confiança e presença. Perfil olfativo: Amadeirado, Picante, Âmbar, Aromático, Doce.', array['Pimenta Preta','Abacaxi','Tabaco','Café','Íris','Patchouli','Baunilha','Âmbar','Madeiras Secas']::text[], 'perfumes-masculinos', 103.35, 75.08, 10, false, 'produtos/perfume-sultao-intenso.jpg', '[{"label":"100 mL","price":170.91,"pix_price":123.33},{"label":"50 mL","price":122.65,"pix_price":88.87},{"label":"30 mL","price":103.35,"pix_price":75.08}]'::jsonb, 'Asad, da Lattafa Perfumes', '{"top":["Pimenta Preta","Abacaxi","Tabaco"],"heart":["Café","Íris","Patchouli"],"base":["Baunilha","Âmbar","Madeiras Secas"]}'::jsonb)
 ) as v(sku, name, description, notes, category_id, price, pix_price, stock, featured, image_url, sizes, inspiration, pyramid)
 where not exists (select 1 from products p where p.sku = v.sku);
+
+-- Fotos reais e o difusor Conforto de Criança (preço provisório, como os demais difusores).
+insert into products (sku, name, description, notes, category_id, price, pix_price, stock, featured, image_url)
+select 'DIF-002', 'Difusor Conforto de Criança', 'Floral macio que lembra colo e cuidado.', array['Jasmim','Rosa','Ylang Ylang']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-conforto-de-crianca.jpg'
+where not exists (select 1 from products where sku = 'DIF-002');
+update products set image_url = 'produtos/vela-lavanda-ambar.jpg' where sku = 'VEL-015' and image_url is null;

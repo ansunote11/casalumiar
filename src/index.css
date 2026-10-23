@@ -56,12 +56,11 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .home-top { position: relative; z-index: 1; display: flex; justify-content: space-between; align-items: center; gap: 8px; height: 79px; box-sizing: border-box; padding: 12px 14px 6px; }
 .home-top .icon-btn { color: #d2b48b; }
 .home-top .badge { background: #d2b48b; color: var(--olive-deep); }
-/* topo verde (cor da logomarca de referência) que desce em degradê até 30% da altura do banner */
-.home-hero { position: relative; isolation: isolate; }
-.home-hero::before { content: ''; position: absolute; z-index: -1; left: 0; right: 0; top: 0;
-  height: calc(79px + 16px + var(--banner-h) * 0.3);
-  background: linear-gradient(to bottom, #3a4126 0, #3a4126 79px, rgba(58, 65, 38, .55) calc(79px + 16px), rgba(58, 65, 38, 0) 100%); }
-.hero-banner { position: relative; z-index: 1; padding: 0 20px; }
+/* topo verde com folha ao fundo (borda reta). A folha é um recorte do banner Amazônia Viva. */
+.home-top { background: #3a4126 url('/folhas-topo.jpg') right 38% / auto 260% no-repeat; }
+.home-top::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #3a4126 25%, rgba(58, 65, 38, .72) 60%, rgba(58, 65, 38, .5)); }
+.home-top { isolation: isolate; }
+.hero-banner { padding: 0 20px; }
 .home-top .spacer { width: 44px; flex: none; }
 .home-top .brand { margin: 0; flex: 1; display: flex; justify-content: center; min-width: 0; }
 .home-top .brand svg { max-width: 100%; height: auto; max-height: 54px; }
@@ -69,7 +68,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .home-search label { display: block; font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 10px; }
 .search-box { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 16px; border: 1px solid var(--line); border-radius: 25px; background: var(--card); color: var(--muted); margin-bottom: 4px; }
 .search-box input { border: 0; margin: 0; padding: 0; background: transparent; outline: none; height: 100%; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 22px 0 12px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0 10px; }
 .section-head h2 { font-size: 24px; }
 .section-head a { font-size: 13px; color: var(--olive); }
 .wa-note { margin-top: 22px; padding: 16px 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); display: flex; align-items: center; gap: 14px; }
@@ -86,10 +85,15 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .icon-btn.solid { background: var(--bg); }
 .page-title { font-size: 32px; line-height: 1.1; }
 .page-sub { margin: 4px 0 14px; color: var(--muted); font-size: 14px; }
-.tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 76px; background: var(--card); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 8px; z-index: 10; }
-.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px; font-size: 11px; color: var(--muted); }
+.tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 76px; background: #2f3520; border-top: 1px solid rgba(210, 180, 139, .18); display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 8px; z-index: 10; }
+.tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font-size: 11.5px; color: #e9e2d2; }
+.tabbar a svg.i { width: 24px; height: 24px; color: #d2b48b; stroke-width: 1.4; }
 .tabbar a > span { position: relative; display: inline-flex; }
-.tabbar a.active { color: var(--olive); font-weight: 500; }
+/* item ativo: ícone preenchido e texto dourado (estilo da referência) */
+.tabbar a.active { color: #d2b48b; font-weight: 500; }
+.tabbar a.active svg.i { fill: #d2b48b; stroke: #d2b48b; }
+.tabbar .badge { background: #d2b48b; color: #2f3520; }
+.has-cartbar { padding-bottom: 90px; }
 .badge { position: absolute; top: -5px; right: -9px; min-width: 17px; height: 17px; background: var(--olive); color: var(--bg); font: 500 10px/17px var(--sans); text-align: center; border-radius: 999px; padding: 0 4px; font-style: normal; }
 .badge.static { position: static; margin-left: 6px; display: inline-block; }
 
@@ -221,7 +225,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .banner-dots button.on::before { width: 18px; background: #faf7f1; }
 /* Arte horizontal (3:2): aparece inteira, sem corte. Em telas muito baixas a altura é limitada para que
    a primeira tela mostre topo + banner + título Categorias + metade dos dois primeiros botões.
-   340px = topo 79 + espaço 16 + título 63 + meio card 100 + menu 76 + folga 6. */
+   340px = topo 79 + espaço 16 + título ~45 + meio card 100 + menu 76 + folga. */
 .welcome {
   --banner-max: calc((min(100vw, 480px) - 40px) / 1.5);
   --banner-h: clamp(160px, calc(100vh - 340px), var(--banner-max));
