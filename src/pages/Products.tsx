@@ -12,6 +12,9 @@ export default function Products() {
   const [q, setQ] = useState(params.get('q') ?? '')
   const { add } = useCart()
   const cat = params.get('cat') ?? ''
+  const urlQ = params.get('q') ?? ''
+  // uma busca nova vinda de um link (ex.: banner) substitui o que estava digitado
+  useEffect(() => setQ(urlQ), [urlQ])
 
   useEffect(() => {
     void api.categories().then(setCats)

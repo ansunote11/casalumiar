@@ -5,6 +5,7 @@ import { BANNERS } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
 import { CategoryRail } from '../CategoryRail'
+import { BannerCarousel } from '../BannerCarousel'
 import type { Category } from '../types'
 
 
@@ -17,10 +18,11 @@ export default function Welcome() {
 
   return (
     <main className="welcome">
+      <div className="home-hero">
       <header className="home-top">
         <span className="spacer" aria-hidden="true" />
         <h1 className="brand">
-          <BrandLockup height={54} />
+          <BrandLockup height={54} color="#D2B48B" />
         </h1>
         <Link to="/carrinho" className="icon-btn" aria-label={`Meu pedido, ${count} itens`}>
           <Icon name="bag" />
@@ -32,17 +34,14 @@ export default function Welcome() {
         </Link>
       </header>
 
-      <div className="page" style={{ paddingTop: 0 }}>
-        {BANNERS.length > 0 && (
-          <section className="banners" aria-label="Destaques">
-            {BANNERS.map((b) => (
-              <a key={b.src} href={b.href} target={b.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="banner">
-                <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1200} height={800} />
-              </a>
-            ))}
-          </section>
-        )}
+      {BANNERS.length > 0 && (
+        <div className="hero-banner">
+          <BannerCarousel banners={BANNERS} />
+        </div>
+      )}
+      </div>
 
+      <div className="page" style={{ paddingTop: 0 }}>
         <div className="section-head">
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>
