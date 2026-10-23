@@ -15,6 +15,11 @@ const CAT_IMAGES: Record<string, string> = {
 }
 const SPEED = 28 // px por segundo
 const RESUME_AFTER = 2500 // ms parado depois que a pessoa solta
+const STEP = 150 + 12 // largura de um card + espaço: o quanto cada seta anda
+// Tamanho pela posição: perto do centro (os 2 do meio) fica 100%; nas pontas, 80%.
+const FULL_ZONE = STEP / 2 // até aqui do centro, tamanho cheio
+const SHRINK_UNTIL = 250 // a partir daqui do centro, tamanho mínimo
+const MIN_SCALE = 0.8
 
 /**
  * Fileira de categorias que desliza sozinha em loop (a lista é desenhada duas vezes e,
@@ -46,12 +51,18 @@ export function CategoryRail({ cats }: { cats: Category[] }) {
         if (s.pos >= half()) s.pos -= half()
         el.scrollLeft = s.pos
       }
+      scaleByPosition(el)
       raf = requestAnimationFrame(tick)
     }
     raf = requestAnimationFrame(tick)
     return () => cancelAnimationFrame(raf)
   }, [cats])
 
+  const arrow = (dir: 1 | -1) => {
+    pause()
+    rail.current?.scrollBy({ left: dir * STEP, behavior: 'smooth' })
+    resumeLater(4000)
+  }
   const pause = () => {
     state.current.paused = true
     state.current.resumeAt = 0
@@ -100,14 +111,12 @@ export function CategoryRail({ cats }: { cats: Category[] }) {
       ) : (
         <Icon name={catIcon(c.id)} />
       )}
-      <span>
-        {c.name}
-        <Icon name="arrow" />
-      </span>
+      <span>{c.name}</span>
     </Link>
   )
 
   return (
+    <div className="rail-wrap">
     <nav
       ref={rail as never}
       className="rail"
@@ -135,5 +144,24 @@ export function CategoryRail({ cats }: { cats: Category[] }) {
       {cats.map((c, i) => card(c, i, false))}
       {cats.map((c, i) => card(c, i, true))}
     </nav>
+    <button className="rail-arrow prev" onClick={() => arrow(-1)} aria-label="Categorias anteriores">
+      <Icon name="arrow" />
+    </button>
+    <button className="rail-arrow next" onClick={() => arrow(1)} aria-label="Próximas categorias">
+      <Icon name="arrow" />
+    </button>
+    </div>
   )
+}
+
+/** Encolhe cada card conforme a distância até o centro da fileira (chamado a cada quadro). */
+function scaleByPosition(el: HTMLElement) {
+  const box = el.getBoundingClientRect()
+  const center = box.left + box.width / 2
+  for (const c of el.children as HTMLCollectionOf<HTMLElement>) {
+    const r = c.getBoundingClientRect()
+    const d = Math.abs(r.left + r.width / 2 - center)
+    const t = Math.min(1, Math.max(0, (d - FULL_ZONE) / (SHRINK_UNTIL - FULL_ZONE)))
+    c.style.transform = `scale(${(1 - t * (1 - MIN_SCALE)).toFixed(3)})`
+  }
 }

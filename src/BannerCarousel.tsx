@@ -72,10 +72,10 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
       {many && (
         <>
           <button className="banner-arrow prev" onClick={() => userGo(index - 1)} aria-label="Banner anterior">
-            <Icon name="back" />
+            <Icon name="arrow" />
           </button>
           <button className="banner-arrow next" onClick={() => userGo(index + 1)} aria-label="Próximo banner">
-            <Icon name="back" />
+            <Icon name="arrow" />
           </button>
           <div className="banner-dots" role="group" aria-label="Escolher banner">
             {banners.map((b, i) => (
