@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import type { Product } from './types'
-import { useCart } from './lib/cart'
+import { unitPrice, useCart } from './lib/cart'
 import { WHATSAPP, brl } from './lib/config'
 
 const paths: Record<string, ReactNode> = {
@@ -134,10 +134,14 @@ export function Thumb({ p, big }: { p: Pick<Product, 'image_url' | 'category_id'
   )
 }
 
-export function Price({ p }: { p: Pick<Product, 'price' | 'pix_price'> }) {
+export function Price({ p }: { p: Pick<Product, 'price' | 'pix_price' | 'sizes'> }) {
+  const from = p.sizes?.length > 1
   return (
     <div className="price">
-      <b>{brl(p.price)}</b>
+      <b>
+        {from && <small className="from">a partir de </small>}
+        {brl(p.price)}
+      </b>
       {p.pix_price ? <small>{brl(p.pix_price)} no PIX</small> : null}
     </div>
   )
@@ -189,7 +193,7 @@ export function TopBar({ right }: { right?: ReactNode }) {
 export function CartBar() {
   const { lines, count } = useCart()
   if (!count) return null
-  const total = lines.reduce((s, l) => s + l.product.price * l.qty, 0)
+  const total = lines.reduce((s, l) => s + unitPrice(l.product, l.size) * l.qty, 0)
   return (
     <Link to="/carrinho" className="cartbar">
       <span>

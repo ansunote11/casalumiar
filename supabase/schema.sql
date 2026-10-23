@@ -24,6 +24,12 @@ create table if not exists products (
   created_at timestamptz not null default now()
 );
 
+-- Tamanhos com preço próprio (perfumes), inspiração e pirâmide olfativa.
+-- 'add column if not exists' também atualiza um banco criado antes desta versão.
+alter table products add column if not exists sizes jsonb not null default '[]';
+alter table products add column if not exists inspiration text not null default '';
+alter table products add column if not exists pyramid jsonb;
+
 create table if not exists orders (
   id uuid primary key,
   code text not null,
@@ -69,6 +75,7 @@ begin
 end $$;
 
 insert into categories (id, name, icon, sort) values
-  ('velas','Velas','🕯️',1), ('home-spray','Home Spray','💨',2),
-  ('difusores','Difusores','🏺',3), ('kits','Kits','🎁',4)
-on conflict (id) do nothing;
+  ('perfumes-femininos','Perfumes Femininos','',1), ('perfumes-masculinos','Perfumes Masculinos','',2),
+  ('velas','Velas','',3), ('home-spray','Home Spray','',4),
+  ('difusores','Difusores','',5), ('kits','Kits','',6)
+on conflict (id) do update set name = excluded.name, sort = excluded.sort;

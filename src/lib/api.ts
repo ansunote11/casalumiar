@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js'
 import type { Category, NewOrder, Order, OrderItem, OrderStatus, Product } from '../types'
-import { seedCategories, seedProducts } from './seed'
+import { SEED_VERSION, seedCategories, seedProducts } from './seed'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
 const key = import.meta.env.VITE_SUPABASE_ANON_KEY as string | undefined
@@ -30,6 +30,19 @@ const ls = {
   },
 }
 
+// Garante os campos novos (tamanhos, inspiração, pirâmide) em dados antigos ou sem migração.
+const normalize = (p: Product): Product => ({ ...p, sizes: p.sizes ?? [], inspiration: p.inspiration ?? '', pyramid: p.pyramid ?? null })
+
+// Modo demonstração: se a lista inicial mudou, recomeça os produtos salvos no navegador.
+try {
+  if (localStorage.getItem('lumiar:seed') !== String(SEED_VERSION)) {
+    localStorage.removeItem('lumiar:products')
+    localStorage.setItem('lumiar:seed', String(SEED_VERSION))
+  }
+} catch {
+  /* navegador sem armazenamento: usa a lista inicial */
+}
+
 const applyLocalStock = (items: OrderItem[], sign: number) => {
   const prods = ls.get<Product[]>('products', seedProducts)
   for (const it of items) {
@@ -44,14 +57,14 @@ const local = {
     return seedCategories
   },
   async products(all = false) {
-    const p = ls.get<Product[]>('products', seedProducts)
+    const p = ls.get<Product[]>('products', seedProducts).map(normalize)
     return all ? p : p.filter((x) => x.active)
   },
   async saveProduct(p: Partial<Product> & { name: string }) {
     const prods = ls.get<Product[]>('products', seedProducts)
     const i = prods.findIndex((x) => x.id === p.id)
     if (i >= 0) prods[i] = { ...prods[i], ...p }
-    else prods.unshift({ id: uid(), sku: '', description: '', notes: [], category_id: 'velas', price: 0, pix_price: null, stock: 0, image_url: null, featured: false, active: true, ...p } as Product)
+    else prods.unshift({ id: uid(), sku: '', description: '', notes: [], category_id: 'velas', price: 0, pix_price: null, stock: 0, image_url: null, featured: false, active: true, sizes: [], inspiration: '', pyramid: null, ...p } as Product)
     ls.set('products', prods)
   },
   async deleteProduct(id: string) {
@@ -90,7 +103,7 @@ const sb = {
     if (!all) q = q.eq('active', true)
     const { data, error } = await q
     if (error) throw error
-    return data as Product[]
+    return (data as Product[]).map(normalize)
   },
   async saveProduct(p: Partial<Product> & { name: string }) {
     const { error } = await supabase!.from('products').upsert(p.id ? p : { ...p, id: uid() })

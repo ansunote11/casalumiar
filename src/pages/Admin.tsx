@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api, demoMode, supabase } from '../lib/api'
 import { DEMO_PIN, brl } from '../lib/config'
-import type { Category, Order, OrderStatus, Product } from '../types'
+import type { Category, Order, OrderStatus, Product, Size } from '../types'
+import { lineName, unitPrice } from '../lib/cart'
 import { BrandLockup, Icon, Logo, type IconName } from '../components'
 
 type Tab = 'resumo' | 'pedidos' | 'balcao' | 'estoque'
@@ -260,16 +261,21 @@ function Pos({ products, reload }: { products: Product[]; reload: () => Promise<
   const [cart, setCart] = useState<Record<string, number>>({})
   const [payment, setPayment] = useState('PIX')
   const [done, setDone] = useState('')
+  // cada tamanho de um perfume vira uma opção própria (chave "id|100 mL")
+  const options = useMemo(
+    () => products.flatMap((p) => (p.sizes.length ? p.sizes.map((s) => ({ key: `${p.id}|${s.label}`, p, size: s.label as string | null })) : [{ key: p.id, p, size: null }])),
+    [products],
+  )
   const found = useMemo(() => {
     const t = q.trim().toLowerCase()
-    return products.filter((p) => p.active && p.stock > 0 && (!t || (p.name + p.sku).toLowerCase().includes(t))).slice(0, 8)
-  }, [products, q])
-  const items = Object.entries(cart).flatMap(([id, qty]) => {
-    const p = products.find((x) => x.id === id)
-    return p ? [{ p, qty }] : []
+    return options.filter(({ p }) => p.active && p.stock > 0 && (!t || (p.name + p.sku).toLowerCase().includes(t))).slice(0, 10)
+  }, [options, q])
+  const items = Object.entries(cart).flatMap(([key, qty]) => {
+    const o = options.find((x) => x.key === key)
+    return o ? [{ ...o, qty }] : []
   })
-  const price = (p: Product) => (payment === 'PIX' && p.pix_price ? p.pix_price : p.price)
-  const total = items.reduce((s, i) => s + price(i.p) * i.qty, 0)
+  const price = (p: Product, size: string | null) => unitPrice(p, size, payment === 'PIX')
+  const total = items.reduce((s, i) => s + price(i.p, i.size) * i.qty, 0)
 
   const finish = async () => {
     const o = await api.createOrder({
@@ -279,7 +285,7 @@ function Pos({ products, reload }: { products: Product[]; reload: () => Promise<
       address: '',
       payment,
       notes: '',
-      items: items.map((i) => ({ id: i.p.id, name: i.p.name, qty: i.qty, price: price(i.p) })),
+      items: items.map((i) => ({ id: i.p.id, name: lineName({ product: i.p, size: i.size }), qty: i.qty, price: price(i.p, i.size) })),
       total,
       source: 'balcao',
     })
@@ -291,18 +297,18 @@ function Pos({ products, reload }: { products: Product[]; reload: () => Promise<
   return (
     <>
       <input className="search" placeholder="Buscar produto ou SKU" value={q} onChange={(e) => setQ(e.target.value)} />
-      {found.map((p) => (
-        <button key={p.id} className="row pick" onClick={() => setCart((c) => ({ ...c, [p.id]: Math.min(p.stock, (c[p.id] ?? 0) + 1) }))}>
-          <span>{p.name}<small> · {p.stock} un.</small></span>
-          <b>{brl(price(p))} +</b>
+      {found.map(({ key, p, size }) => (
+        <button key={key} className="row pick" onClick={() => setCart((c) => ({ ...c, [key]: Math.min(p.stock, (c[key] ?? 0) + 1) }))}>
+          <span>{lineName({ product: p, size })}<small> · {p.stock} un.</small></span>
+          <b>{brl(price(p, size))} +</b>
         </button>
       ))}
       <h3>Venda atual</h3>
       {items.length === 0 && <p className="muted">Toque num produto para adicionar.</p>}
-      {items.map(({ p, qty }) => (
-        <div key={p.id} className="row">
-          <span>{qty}x {p.name}</span>
-          <button className="ghost" onClick={() => setCart(({ [p.id]: _, ...r }) => r)}>remover</button>
+      {items.map(({ key, p, size, qty }) => (
+        <div key={key} className="row">
+          <span>{qty}x {lineName({ product: p, size })}</span>
+          <button className="ghost" onClick={() => setCart(({ [key]: _, ...r }) => r)}>remover</button>
         </div>
       ))}
       <div className="seg">
@@ -317,7 +323,16 @@ function Pos({ products, reload }: { products: Product[]; reload: () => Promise<
   )
 }
 
-const blank = { name: '', sku: '', category_id: 'velas', price: 0, pix_price: null, stock: 0, description: '', notes: [], image_url: null, featured: false, active: true } as Partial<Product> & { name: string }
+const blank = { name: '', sku: '', category_id: 'velas', price: 0, pix_price: null, stock: 0, description: '', notes: [], image_url: null, featured: false, active: true, sizes: [], inspiration: '', pyramid: null } as Partial<Product> & { name: string }
+
+// Tamanhos no editor: uma linha por tamanho, "100 mL; 189,32; 136,49" (preço PIX opcional)
+const sizesToText = (sizes: Size[] = []) => sizes.map((s) => [s.label, s.price, s.pix_price ?? ''].join('; ').replace(/\./g, ',')).join('\n')
+const textToSizes = (t: string): Size[] =>
+  t.split('\n').flatMap((line) => {
+    const [label, price, pix] = line.split(';').map((x) => x.trim())
+    const n = (v?: string) => (v ? Number(v.replace(',', '.')) : NaN)
+    return label && !isNaN(n(price)) ? [{ label, price: n(price), pix_price: isNaN(n(pix)) ? null : n(pix) }] : []
+  })
 
 function Stock({ products, cats, reload }: { products: Product[]; cats: Category[]; reload: () => Promise<void> }) {
   const [edit, setEdit] = useState<(Partial<Product> & { name: string }) | null>(null)
@@ -325,7 +340,10 @@ function Stock({ products, cats, reload }: { products: Product[]; cats: Category
   const list = products.filter((p) => !q || (p.name + p.sku).toLowerCase().includes(q.toLowerCase()))
   const save = async () => {
     if (!edit || !edit.name.trim()) return
-    await api.saveProduct(edit)
+    const sizes = edit.sizes ?? []
+    // com tamanhos, o preço de vitrine ("a partir de") é o do menor tamanho
+    const cheapest = sizes.length ? sizes.reduce((a, b) => (b.price < a.price ? b : a)) : null
+    await api.saveProduct(cheapest ? { ...edit, price: cheapest.price, pix_price: cheapest.pix_price } : edit)
     setEdit(null)
     await reload()
   }
@@ -347,6 +365,10 @@ function Stock({ products, cats, reload }: { products: Product[]; cats: Category
         </div>
         <input placeholder="Notas olfativas (separadas por vírgula)" value={(edit.notes ?? []).join(', ')} onChange={(e) => setEdit({ ...edit, notes: e.target.value.split(',').map((s) => s.trim()).filter(Boolean) })} />
         <textarea placeholder="Descrição" value={edit.description ?? ''} onChange={(e) => setEdit({ ...edit, description: e.target.value })} />
+        <label className="small muted">Tamanhos (um por linha: tamanho; preço; preço PIX). Deixe vazio para preço único.
+          <textarea key={edit.id ?? 'novo'} defaultValue={sizesToText(edit.sizes)} placeholder={'100 mL; 189,32; 136,49\n50 mL; 131,86; 95,44'} onBlur={(e) => setEdit({ ...edit, sizes: textToSizes(e.target.value) })} />
+        </label>
+        <input placeholder="Inspirado em (opcional)" value={edit.inspiration ?? ''} onChange={(e) => setEdit({ ...edit, inspiration: e.target.value })} />
         <input placeholder="URL da foto (opcional)" value={edit.image_url ?? ''} onChange={(e) => setEdit({ ...edit, image_url: e.target.value || null })} />
         <label className="check"><input type="checkbox" checked={!!edit.featured} onChange={(e) => setEdit({ ...edit, featured: e.target.checked })} /> Destaque (Mais pedido)</label>
         <label className="check"><input type="checkbox" checked={edit.active !== false} onChange={(e) => setEdit({ ...edit, active: e.target.checked })} /> Visível no catálogo</label>

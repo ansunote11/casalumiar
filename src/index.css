@@ -64,19 +64,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 22px 0 12px; }
 .section-head h2 { font-size: 24px; }
 .section-head a { font-size: 13px; color: var(--olive); }
-.cat-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
-.cat { position: relative; overflow: hidden; height: 118px; border-radius: 18px; background: var(--sand); padding: 16px; display: flex; flex-direction: column; justify-content: space-between; color: var(--ink); isolation: isolate; }
-.cat svg.i { width: 30px; height: 30px; color: var(--wood); stroke-width: 1.3; }
-.cat span { position: relative; max-width: 60%; font-family: var(--serif); font-size: 22px; font-weight: 600; line-height: 1.05; }
-.cat svg.go { position: relative; width: 18px; height: 18px; stroke-width: 1.6; order: 2; }
-/* foto do produto à direita, dissolvendo na cor do botão */
-.cat img { position: absolute; z-index: -1; top: 0; right: 0; width: 66%; height: 100%; object-fit: cover; object-position: 55% 60%;
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 50%); mask-image: linear-gradient(to right, transparent, #000 50%); }
-.cat.c0 { background: var(--olive); color: var(--bg); }
-.cat.c0 svg.i { color: var(--wood-light); }
-.cat.c3 { background: var(--wood); color: #fff; }
-.cat.c3 svg.i { color: var(--bg); }
-.wa-note { margin-top: 18px; padding: 16px 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); display: flex; align-items: center; gap: 14px; }
+.wa-note { margin-top: 22px; padding: 16px 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); display: flex; align-items: center; gap: 14px; }
 .wa-note .ic { width: 44px; height: 44px; border-radius: 22px; background: #f2ebdf; color: var(--olive); display: flex; align-items: center; justify-content: center; flex: none; }
 .wa-note b { font-weight: 500; display: block; }
 .wa-note small { color: var(--muted); font-size: 13px; }
@@ -212,10 +200,33 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .banners .banner:only-child { flex-basis: 100%; }
 /* Arte horizontal (3:2): aparece inteira, sem corte. Em telas muito baixas a altura é limitada para que
    a primeira tela mostre topo + banner + título Categorias + metade dos dois primeiros botões.
-   300px = topo 79 + espaço 16 + título 63 + meio botão 59 + menu 76 + folga 7. */
+   340px = topo 79 + espaço 16 + título 63 + meio card 100 + menu 76 + folga 6. */
 .banner img {
   display: block; width: 100%; object-fit: cover; object-position: center;
   --banner-max: calc((min(100vw, 480px) - 40px) / 1.5);
-  height: clamp(160px, calc(100vh - 300px), var(--banner-max));
-  height: clamp(160px, calc(100svh - 300px), var(--banner-max));
+  height: clamp(160px, calc(100vh - 340px), var(--banner-max));
+  height: clamp(160px, calc(100svh - 340px), var(--banner-max));
 }
+
+/* perfumes: inspiração, tamanhos e pirâmide olfativa */
+.price .from { font-size: 11px; font-weight: 400; color: var(--muted); }
+.pdp .insp { margin: -4px 0 8px; font-style: italic; font-family: var(--serif); font-size: 17px; color: var(--wood-ink); }
+.pdp h3.label { font-family: var(--sans); font-size: 13px; font-weight: 500; margin: 16px 0 8px; }
+.seg.sizes button { min-width: 76px; text-transform: none; }
+.pyramid { display: grid; gap: 8px; margin-top: 14px; }
+.pyramid div { display: grid; grid-template-columns: 70px 1fr; gap: 10px; align-items: baseline; padding: 10px 12px; background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+.pyramid small { font-size: 11px; letter-spacing: 1px; text-transform: uppercase; color: var(--wood-ink); }
+.pyramid span { font-size: 13.5px; line-height: 1.4; }
+
+/* carrossel de categorias: cards verticais deslizando em loop (src/CategoryRail.tsx) */
+.rail { display: flex; gap: 12px; overflow-x: auto; padding: 0 20px 4px; scrollbar-width: none; cursor: grab; user-select: none; -webkit-user-select: none; }
+.rail::-webkit-scrollbar { display: none; }
+.rail:active { cursor: grabbing; }
+.rail-card { position: relative; flex: 0 0 150px; height: 200px; border-radius: 18px; overflow: hidden; isolation: isolate; background: var(--sand); color: #fff; display: flex; align-items: flex-end; -webkit-user-drag: none; }
+.rail-card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
+.rail-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(30, 32, 18, .78), rgba(30, 32, 18, .1) 55%, transparent); }
+.rail-card > svg.i { position: absolute; top: 16px; left: 16px; width: 30px; height: 30px; color: var(--wood); }
+.rail-card span { display: flex; align-items: flex-end; justify-content: space-between; gap: 6px; width: 100%; padding: 14px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.05; text-shadow: 0 1px 8px rgba(0, 0, 0, .35); }
+.rail-card span svg.i { width: 16px; height: 16px; flex: none; stroke-width: 1.8; margin-bottom: 2px; }
+.rail-card:hover img { transform: scale(1.05); }
+.rail-card:focus-visible { outline: 2px solid var(--wood); outline-offset: -2px; }

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
-import { useCart } from '../lib/cart'
+import { lineName, unitPrice, useCart } from '../lib/cart'
 import { Icon, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
 import { whatsappLink } from '../lib/whatsapp'
@@ -20,7 +20,7 @@ export default function Cart() {
   const [busy, setBusy] = useState(false)
   const [err, setErr] = useState('')
 
-  const unit = (l: (typeof lines)[number]) => (payment === 'PIX' && l.product.pix_price ? l.product.pix_price : l.product.price)
+  const unit = (l: (typeof lines)[number]) => unitPrice(l.product, l.size, payment === 'PIX')
   const total = lines.reduce((s, l) => s + unit(l) * l.qty, 0)
   const deliveryLabel = delivery === 'entrega' ? 'Entrega' : 'Retirar na loja'
 
@@ -37,7 +37,7 @@ export default function Cart() {
         address: address.trim(),
         payment,
         notes: notes.trim(),
-        items: lines.map((l) => ({ id: l.product.id, name: l.product.name, qty: l.qty, price: unit(l) })),
+        items: lines.map((l) => ({ id: l.product.id, name: lineName(l), qty: l.qty, price: unit(l) })),
         total,
         source: 'catalogo',
       })
@@ -72,20 +72,20 @@ export default function Cart() {
           Meu pedido
         </h2>
         {lines.map((l) => (
-          <div key={l.product.id} className="line">
+          <div key={l.key} className="line">
             <div className="mini">
               <Thumb p={l.product} />
             </div>
             <div className="grow">
-              <b>{l.product.name}</b>
+              <b>{lineName(l)}</b>
               <small>{brl(unit(l))} cada</small>
             </div>
             <div className="stepper sm">
-              <button onClick={() => setQty(l.product.id, l.qty - 1)} aria-label={`Diminuir ${l.product.name}`}>
+              <button onClick={() => setQty(l.key, l.qty - 1)} aria-label={`Diminuir ${lineName(l)}`}>
                 −
               </button>
               <span>{l.qty}</span>
-              <button onClick={() => setQty(l.product.id, l.qty + 1)} aria-label={`Aumentar ${l.product.name}`}>
+              <button onClick={() => setQty(l.key, l.qty + 1)} aria-label={`Aumentar ${lineName(l)}`}>
                 +
               </button>
             </div>
@@ -119,7 +119,7 @@ export default function Cart() {
         <textarea aria-label="Observações" placeholder="Observações (opcional)" value={notes} onChange={(e) => setNotes(e.target.value)} />
 
         <div className="bubble" aria-label="Prévia da mensagem do WhatsApp">
-          {['Olá, Casa Lumiar! Quero fazer um pedido:', ...lines.map((l) => `${l.qty}x ${l.product.name}`), `Recebimento: ${deliveryLabel} · ${payment}`].join('\n')}
+          {['Olá, Casa Lumiar! Quero fazer um pedido:', ...lines.map((l) => `${l.qty}x ${lineName(l)}`), `Recebimento: ${deliveryLabel} · ${payment}`].join('\n')}
         </div>
 
         {err && <p className="error">{err}</p>}

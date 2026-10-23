@@ -3,11 +3,10 @@ import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
 import { BANNERS } from '../lib/config'
 import { useCart } from '../lib/cart'
-import { BrandLockup, Icon, catIcon } from '../components'
+import { BrandLockup, Icon } from '../components'
+import { CategoryRail } from '../CategoryRail'
 import type { Category } from '../types'
 
-// Imagens geradas no Canva (Dream Lab), em public/categorias/<id>.png
-const CAT_IMAGES = ['velas', 'home-spray', 'difusores', 'kits']
 
 export default function Welcome() {
   const [cats, setCats] = useState<Category[]>([])
@@ -48,20 +47,11 @@ export default function Welcome() {
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>
         </div>
-        <div className="cat-grid">
-          {cats.map((c, i) => (
-            <Link key={c.id} to={`/produtos?cat=${c.id}`} className={`cat c${i % 4}`}>
-              {CAT_IMAGES.includes(c.id) ? (
-                <img src={`${import.meta.env.BASE_URL}categorias/${c.id}.png`} alt="" loading="lazy" />
-              ) : (
-                <Icon name={catIcon(c.id)} />
-              )}
-              <span>{c.name}</span>
-              <Icon name="arrow" className="go" />
-            </Link>
-          ))}
-        </div>
+      </div>
 
+      <CategoryRail cats={cats} />
+
+      <div className="page" style={{ paddingTop: 0 }}>
         <div className="wa-note">
           <span className="ic">
             <Icon name="whatsapp" />

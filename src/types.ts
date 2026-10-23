@@ -1,3 +1,7 @@
+/** Um tamanho à venda (ex.: 100 mL) com seu preço cheio e no PIX. */
+export type Size = { label: string; price: number; pix_price: number | null }
+export type Pyramid = { top: string[]; heart: string[]; base: string[] }
+
 export type Category = { id: string; name: string; icon: string; sort: number }
 
 export type Product = {
@@ -13,6 +17,10 @@ export type Product = {
   image_url: string | null
   featured: boolean
   active: boolean
+  /** Vazio = preço único (price/pix_price). Com itens, cada tamanho tem seu preço. */
+  sizes: Size[]
+  inspiration: string
+  pyramid: Pyramid | null
 }
 
 export type OrderItem = { id: string; name: string; qty: number; price: number }

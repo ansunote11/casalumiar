@@ -1,10 +1,13 @@
 import type { Category, Product } from '../types'
+import { seedPerfumes } from './perfumes'
 
 export const seedCategories: Category[] = [
-  { id: 'velas', name: 'Velas', icon: '🕯️', sort: 1 },
-  { id: 'home-spray', name: 'Home Spray', icon: '💨', sort: 2 },
-  { id: 'difusores', name: 'Difusores', icon: '🏺', sort: 3 },
-  { id: 'kits', name: 'Kits', icon: '🎁', sort: 4 },
+  { id: 'perfumes-femininos', name: 'Perfumes Femininos', icon: '', sort: 1 },
+  { id: 'perfumes-masculinos', name: 'Perfumes Masculinos', icon: '', sort: 2 },
+  { id: 'velas', name: 'Velas', icon: '', sort: 3 },
+  { id: 'home-spray', name: 'Home Spray', icon: '', sort: 4 },
+  { id: 'difusores', name: 'Difusores', icon: '', sort: 5 },
+  { id: 'kits', name: 'Kits', icon: '', sort: 6 },
 ]
 
 // Fragrâncias do documento de identidade. Preços de Home Spray/Difusor/Kit são provisórios.
@@ -27,8 +30,8 @@ const frag: [string, string[], string][] = [
   ['Bosque Boreal', ['Campanula', 'Lítsea cubeba', 'Eucalipto globulus', 'Cedro', 'Almíscar'], 'Floresta fria: verde, amadeirado e limpo.'],
 ]
 
-export const seedProducts: Product[] = frag.flatMap(([name, notes, description], i) => {
-  const base = { notes, description, image_url: null, active: true }
+const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
+  const base = { notes, description, image_url: null, active: true, sizes: [], inspiration: '', pyramid: null }
   const list: Product[] = [
     { ...base, id: `vela-${i}`, sku: `VEL-${String(i + 1).padStart(3, '0')}`, name: `Vela ${name}`, category_id: 'velas', price: 62.5, pix_price: 50, stock: 12, featured: i < 4 },
   ]
@@ -38,3 +41,8 @@ export const seedProducts: Product[] = frag.flatMap(([name, notes, description],
     list.push({ ...base, id: `dif-${i}`, sku: `DIF-${String(i + 1).padStart(3, '0')}`, name: `Difusor ${name}`, category_id: 'difusores', price: 54.9, pix_price: 48, stock: 6, featured: false })
   return list
 })
+
+export const seedProducts: Product[] = [...seedPerfumes, ...aromas]
+
+// Muda quando a lista inicial muda, para o modo demonstração recarregar os produtos.
+export const SEED_VERSION = 2

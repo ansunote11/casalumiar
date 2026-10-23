@@ -26,6 +26,8 @@ Sem `.env`, roda em **modo demonstração**: dados ficam no navegador, painel em
 ## Ajustes rápidos
 
 - Número do WhatsApp, nome e PIN demo: `src/lib/config.ts`
+- Perfumes (19, com tamanhos 30/50/100 mL e preço PIX) extraídos dos catálogos FlipHTML5: `src/lib/perfumes.ts`; fotos em `public/produtos/`
+- Banco já criado antes dos perfumes: rode `supabase/schema.sql` de novo (só adiciona as colunas e categorias novas) e depois `supabase/seed.sql`
 - Produtos de exemplo (aromas do documento de identidade; preços de spray/difusor são provisórios): `src/lib/seed.ts`
 
 ## Publicar
