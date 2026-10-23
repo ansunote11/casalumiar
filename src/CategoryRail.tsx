@@ -11,7 +11,7 @@ const CAT_IMAGES: Record<string, string> = {
   velas: 'velas.jpg',
   'home-spray': 'home-spray.png',
   difusores: 'difusores.jpg',
-  kits: 'kits.png',
+  kits: 'kits.jpg',
 }
 const SPEED = 28 // px por segundo
 const RESUME_AFTER = 2500 // ms parado depois que a pessoa solta

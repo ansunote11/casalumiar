@@ -5,8 +5,8 @@
   --sage: #e3e5d6;
   --ink: #2a2a22;
   --muted: #6b6757;
-  --olive: #49522f;
-  --olive-deep: #3a4126;
+  --olive: #2e4a21;
+  --olive-deep: #1d3412;
   --wood: #a8743f;
   --wood-light: #d9b98f;
   --wood-ink: #6e4a22;
@@ -57,24 +57,33 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .home-top .icon-btn { color: #d2b48b; }
 .home-top .badge { background: #d2b48b; color: var(--olive-deep); }
 /* topo verde com folha ao fundo (borda reta). A folha é um recorte do banner Amazônia Viva. */
-.home-top { background: #3a4126 url('/folhas-topo.jpg') right 38% / auto 260% no-repeat; }
-.home-top::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #3a4126 25%, rgba(58, 65, 38, .72) 60%, rgba(58, 65, 38, .5)); }
+.home-top { background: #1d3412 url('/folhas-topo.jpg') right 38% / auto 260% no-repeat; }
+.home-top::before { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(90deg, #1d3412 25%, rgba(29, 52, 18, .74) 60%, rgba(29, 52, 18, .5)); }
 .home-top { isolation: isolate; }
 .hero-banner { padding: 0 20px; }
 .home-top .spacer { width: 44px; flex: none; }
 .home-top .brand { margin: 0; flex: 1; display: flex; justify-content: center; min-width: 0; }
 .home-top .brand svg { max-width: 100%; height: auto; max-height: 54px; }
-.home-search { margin-top: 22px; }
-.home-search label { display: block; font-family: var(--serif); font-size: 20px; font-weight: 600; margin-bottom: 10px; }
+/* busca entre o banner e as categorias (pílula clara, como a referência) */
+.home-search { margin-top: 16px; }
+.search-pill { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px; border-radius: 26px; border: 1px solid #ddd2bf; background: #f6f1e7; color: #2a2a22; }
+.search-pill svg.i { width: 22px; height: 22px; stroke-width: 1.6; }
+.search-pill input { flex: 1; min-width: 0; border: 0; margin: 0; padding: 0; height: 100%; background: transparent; outline: none; font-size: 15px; color: var(--ink); }
+.search-pill input::placeholder { color: #6b6757; }
+.search-pill:focus-within { border-color: var(--wood); }
+/* botão do WhatsApp (verde-escuro, abre a conversa direto) */
+.wa-button { margin-top: 22px; display: flex; align-items: center; gap: 16px; min-height: 72px; padding: 14px 18px; border-radius: 20px; background: var(--olive-deep); color: #faf7f1; }
+.wa-button > svg.i { width: 30px; height: 30px; color: #faf7f1; stroke-width: 1.3; flex: none; }
+.wa-button span { flex: 1; display: flex; flex-direction: column; gap: 2px; }
+.wa-button b { font-weight: 500; font-size: 15.5px; }
+.wa-button small { font-size: 13px; color: #d9d3c3; }
+.wa-button svg.go { width: 22px; height: 22px; color: #d2b48b; stroke-width: 1.3; flex: none; }
+.wa-button:hover { background: #15270d; }
 .search-box { display: flex; align-items: center; gap: 10px; height: 50px; padding: 0 16px; border: 1px solid var(--line); border-radius: 25px; background: var(--card); color: var(--muted); margin-bottom: 4px; }
 .search-box input { border: 0; margin: 0; padding: 0; background: transparent; outline: none; height: 100%; }
-.section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 20px 0 10px; }
+.section-head { display: flex; justify-content: space-between; align-items: baseline; padding: 18px 0 10px; }
 .section-head h2 { font-size: 24px; }
 .section-head a { font-size: 13px; color: var(--olive); }
-.wa-note { margin-top: 22px; padding: 16px 18px; border-radius: 18px; border: 1px solid var(--line); background: var(--card); display: flex; align-items: center; gap: 14px; }
-.wa-note .ic { width: 44px; height: 44px; border-radius: 22px; background: #f2ebdf; color: var(--olive); display: flex; align-items: center; justify-content: center; flex: none; }
-.wa-note b { font-weight: 500; display: block; }
-.wa-note small { color: var(--muted); font-size: 13px; }
 .admin-link { display: block; text-align: center; color: var(--muted); font-size: 12px; margin-top: 18px; padding: 8px; }
 
 /* barras */
@@ -85,14 +94,14 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .icon-btn.solid { background: var(--bg); }
 .page-title { font-size: 32px; line-height: 1.1; }
 .page-sub { margin: 4px 0 14px; color: var(--muted); font-size: 14px; }
-.tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 76px; background: #2f3520; border-top: 1px solid rgba(210, 180, 139, .18); display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 8px; z-index: 10; }
+.tabbar { position: fixed; bottom: 0; left: 50%; transform: translateX(-50%); width: 100%; max-width: 480px; height: 76px; background: #1d3412; border-top: 1px solid rgba(210, 180, 139, .18); display: grid; grid-template-columns: repeat(4, 1fr); padding-bottom: 8px; z-index: 10; }
 .tabbar a { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 5px; font-size: 11.5px; color: #e9e2d2; }
 .tabbar a svg.i { width: 24px; height: 24px; color: #d2b48b; stroke-width: 1.4; }
 .tabbar a > span { position: relative; display: inline-flex; }
 /* item ativo: ícone preenchido e texto dourado (estilo da referência) */
 .tabbar a.active { color: #d2b48b; font-weight: 500; }
 .tabbar a.active svg.i { fill: #d2b48b; stroke: #d2b48b; }
-.tabbar .badge { background: #d2b48b; color: #2f3520; }
+.tabbar .badge { background: #d2b48b; color: #1d3412; }
 .has-cartbar { padding-bottom: 90px; }
 .badge { position: absolute; top: -5px; right: -9px; min-width: 17px; height: 17px; background: var(--olive); color: var(--bg); font: 500 10px/17px var(--sans); text-align: center; border-radius: 999px; padding: 0 4px; font-style: normal; }
 .badge.static { position: static; margin-left: 6px; display: inline-block; }
@@ -225,12 +234,12 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .banner-dots button.on::before { width: 18px; background: #faf7f1; }
 /* Arte horizontal (3:2): aparece inteira, sem corte. Em telas muito baixas a altura é limitada para que
    a primeira tela mostre topo + banner + título Categorias + metade dos dois primeiros botões.
-   340px = topo 79 + espaço 16 + título ~45 + meio card 100 + menu 76 + folga. */
+   408px = topo 79 + espaço 16 + busca 68 + título ~45 + meio card 100 + menu 76 + folga. */
 .welcome {
   --banner-max: calc((min(100vw, 480px) - 40px) / 1.5);
-  --banner-h: clamp(160px, calc(100vh - 340px), var(--banner-max));
+  --banner-h: clamp(160px, calc(100vh - 408px), var(--banner-max));
 }
-@supports (height: 100svh) { .welcome { --banner-h: clamp(160px, calc(100svh - 340px), var(--banner-max)); } }
+@supports (height: 100svh) { .welcome { --banner-h: clamp(160px, calc(100svh - 408px), var(--banner-max)); } }
 .banner img { display: block; width: 100%; object-fit: cover; object-position: center; height: var(--banner-h); }
 
 /* perfumes: inspiração, tamanhos e pirâmide olfativa */
@@ -250,7 +259,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .rail-wrap { position: relative; }
 .rail-card { position: relative; will-change: transform; transform-origin: center; flex: 0 0 150px; height: 200px; border-radius: 18px; overflow: hidden; isolation: isolate; background: var(--sand); color: #fff; display: flex; align-items: flex-end; -webkit-user-drag: none; }
 .rail-card img { position: absolute; inset: 0; z-index: -2; width: 100%; height: 100%; object-fit: cover; transition: transform .6s ease; }
-.rail-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(30, 32, 18, .78), rgba(30, 32, 18, .1) 55%, transparent); }
+.rail-card::after { content: ''; position: absolute; inset: 0; z-index: -1; background: linear-gradient(to top, rgba(20, 36, 12, .8), rgba(20, 36, 12, .1) 55%, transparent); }
 .rail-card > svg.i { position: absolute; top: 16px; left: 16px; width: 30px; height: 30px; color: var(--wood); }
 .rail-card span { display: block; width: 100%; padding: 14px; font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.05; text-shadow: 0 1px 8px rgba(0, 0, 0, .35); }
 .rail-card:hover img { transform: scale(1.05); }

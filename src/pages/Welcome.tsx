@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
-import { BANNERS } from '../lib/config'
+import { BANNERS, WHATSAPP } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
 import { CategoryRail } from '../CategoryRail'
@@ -42,6 +42,20 @@ export default function Welcome() {
       </div>
 
       <div className="page" style={{ paddingTop: 0, paddingBottom: 0 }}>
+        <form
+          role="search"
+          className="home-search"
+          onSubmit={(e) => {
+            e.preventDefault()
+            nav(`/produtos${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`)
+          }}
+        >
+          <label className="search-pill">
+            <Icon name="search" />
+            <input type="search" aria-label="Buscar produtos" placeholder="Procurando um aroma específico?" value={q} onChange={(e) => setQ(e.target.value)} />
+          </label>
+        </form>
+
         <div className="section-head">
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>
@@ -51,30 +65,14 @@ export default function Welcome() {
       <CategoryRail cats={cats} />
 
       <div className="page" style={{ paddingTop: 0 }}>
-        <div className="wa-note">
-          <span className="ic">
-            <Icon name="whatsapp" />
+        <a className="wa-button" href={`https://wa.me/${WHATSAPP}?text=${encodeURIComponent('Olá, Casa Lumiar! Gostaria de atendimento.')}`} target="_blank" rel="noreferrer">
+          <Icon name="whatsapp" />
+          <span>
+            <b>Atendimento pelo WhatsApp</b>
+            <small>Estamos aqui para te ajudar.</small>
           </span>
-          <div>
-            <b>Monte seu pedido aqui</b>
-            <small>e ele chega pronto no nosso WhatsApp.</small>
-          </div>
-        </div>
-
-        <form
-          role="search"
-          className="home-search"
-          onSubmit={(e) => {
-            e.preventDefault()
-            nav(`/produtos${q.trim() ? `?q=${encodeURIComponent(q.trim())}` : ''}`)
-          }}
-        >
-          <label htmlFor="home-q">Procurando um aroma específico?</label>
-          <div className="search-box">
-            <Icon name="search" />
-            <input id="home-q" type="search" placeholder="Buscar velas, aromas, notas…" value={q} onChange={(e) => setQ(e.target.value)} />
-          </div>
-        </form>
+          <Icon name="arrow" className="go" />
+        </a>
 
         <Link to="/admin" className="admin-link">
           Área da loja
