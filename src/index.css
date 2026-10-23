@@ -201,3 +201,9 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .ai h3 { margin: 0 0 8px; }
 .ai p { margin: 0 0 10px; line-height: 1.5; color: #4a4636; font-size: 14px; }
 .ai small { color: var(--wood-ink); }
+
+/* banners da página inicial */
+.banners { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; margin: 16px -20px 0; padding: 0 20px; scrollbar-width: none; }
+.banner { flex: 0 0 100%; scroll-snap-align: center; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(42, 42, 34, .12); }
+.banners .banner:only-child { flex-basis: 100%; }
+.banner img { display: block; width: 100%; height: auto; }

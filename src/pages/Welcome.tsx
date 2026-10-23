@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
+import { BANNERS } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon, catIcon } from '../components'
 import type { Category } from '../types'
@@ -30,6 +31,16 @@ export default function Welcome() {
       </header>
 
       <div className="page" style={{ paddingTop: 0 }}>
+        {BANNERS.length > 0 && (
+          <section className="banners" aria-label="Destaques">
+            {BANNERS.map((b) => (
+              <a key={b.src} href={b.href} target={b.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="banner">
+                <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1024} height={1536} />
+              </a>
+            ))}
+          </section>
+        )}
+
         <div className="section-head">
           <h2>Categorias</h2>
           <Link to="/produtos">Ver tudo</Link>
