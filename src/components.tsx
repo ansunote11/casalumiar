@@ -100,6 +100,26 @@ const paths: Record<string, ReactNode> = {
     </>
   ),
   spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />,
+  // ações do painel
+  edit: <path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" />,
+  copy: (
+    <>
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2" />
+    </>
+  ),
+  duplicate: (
+    <>
+      <rect x="8" y="8" width="12" height="12" rx="2" />
+      <path d="M16 8V6a2 2 0 0 0-2-2H6a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h2M14 11v6M11 14h6" />
+    </>
+  ),
+  trash: (
+    <>
+      <path d="M4 7h16M10 7V4h4v3M6 7l1 13h10l1-13" />
+      <path d="M10 11v5M14 11v5" />
+    </>
+  ),
 }
 
 export type IconName = keyof typeof paths

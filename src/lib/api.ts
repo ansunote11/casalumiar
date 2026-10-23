@@ -1,5 +1,5 @@
 import { createClient } from '@supabase/supabase-js'
-import type { Category, NewOrder, Order, OrderItem, OrderStatus, Product } from '../types'
+import type { Category, NewOrder, Order, OrderItem, OrderStatus, OrderUpdate, Product } from '../types'
 import { SEED_VERSION, seedCategories, seedProducts } from './seed'
 
 const url = import.meta.env.VITE_SUPABASE_URL as string | undefined
@@ -13,6 +13,7 @@ const held = (s: OrderStatus | null) => s === 'confirmado' || s === 'entregue'
 export const stockEffect = (prev: OrderStatus | null, next: OrderStatus) => Number(held(next)) - Number(held(prev))
 
 const uid = () => crypto.randomUUID()
+export const orderTotal = (items: OrderItem[]) => Math.round(items.reduce((s, i) => s + i.price * i.qty, 0) * 100) / 100
 const orderCode = () => 'LUM-' + Math.random().toString(36).slice(2, 7).toUpperCase()
 
 // ---------- backend local (demonstração, salva no navegador) ----------
@@ -89,6 +90,24 @@ const local = {
     ls.set('orders', orders)
     if (fx) applyLocalStock(o.items, fx)
   },
+  async updateOrder(id: string, patch: OrderUpdate) {
+    const orders = ls.get<Order[]>('orders', [])
+    const o = orders.find((x) => x.id === id)
+    if (!o) return
+    // pedido que já baixou estoque: devolve os itens antigos e baixa os novos
+    if (held(o.status) && patch.items) {
+      applyLocalStock(o.items, -1)
+      applyLocalStock(patch.items, 1)
+    }
+    Object.assign(o, patch, patch.items ? { total: orderTotal(patch.items) } : {})
+    ls.set('orders', orders)
+  },
+  async deleteOrder(id: string) {
+    const orders = ls.get<Order[]>('orders', [])
+    const o = orders.find((x) => x.id === id)
+    if (o && held(o.status)) applyLocalStock(o.items, -1)
+    ls.set('orders', orders.filter((x) => x.id !== id))
+  },
 }
 
 // ---------- backend Supabase ----------
@@ -138,6 +157,26 @@ const sb = {
     const { error: e2 } = await supabase!.from('orders').update({ status: next }).eq('id', id)
     if (e2) throw e2
     if (fx) await sb.applyStock(o.items, fx)
+  },
+  async updateOrder(id: string, patch: OrderUpdate) {
+    const { data, error } = await supabase!.from('orders').select('*').eq('id', id).single()
+    if (error) throw error
+    const o = data as Order
+    const { error: e2 } = await supabase!.from('orders').update({ ...patch, ...(patch.items ? { total: orderTotal(patch.items) } : {}) }).eq('id', id)
+    if (e2) throw e2
+    if (held(o.status) && patch.items) {
+      await sb.applyStock(o.items, -1)
+      await sb.applyStock(patch.items, 1)
+    }
+  },
+  async deleteOrder(id: string) {
+    const { data, error } = await supabase!.from('orders').select('*').eq('id', id).single()
+    if (error) throw error
+    const o = data as Order
+    const { error: e2 } = await supabase!.from('orders').delete().eq('id', id)
+    if (e2) throw e2
+    // apagar um pedido confirmado/entregue devolve os itens ao estoque
+    if (held(o.status)) await sb.applyStock(o.items, -1)
   },
 }
 
