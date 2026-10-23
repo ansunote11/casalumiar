@@ -6,6 +6,9 @@ import { useCart } from '../lib/cart'
 import { BrandLockup, Icon, catIcon } from '../components'
 import type { Category } from '../types'
 
+// Imagens geradas no Canva (Dream Lab), em public/categorias/<id>.png
+const CAT_IMAGES = ['velas', 'home-spray', 'difusores', 'kits']
+
 export default function Welcome() {
   const [cats, setCats] = useState<Category[]>([])
   const [q, setQ] = useState('')
@@ -35,7 +38,7 @@ export default function Welcome() {
           <section className="banners" aria-label="Destaques">
             {BANNERS.map((b) => (
               <a key={b.src} href={b.href} target={b.href.startsWith('http') ? '_blank' : undefined} rel="noreferrer" className="banner">
-                <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1024} height={1536} />
+                <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1200} height={800} />
               </a>
             ))}
           </section>
@@ -48,8 +51,13 @@ export default function Welcome() {
         <div className="cat-grid">
           {cats.map((c, i) => (
             <Link key={c.id} to={`/produtos?cat=${c.id}`} className={`cat c${i % 4}`}>
-              <Icon name={catIcon(c.id)} />
+              {CAT_IMAGES.includes(c.id) ? (
+                <img src={`${import.meta.env.BASE_URL}categorias/${c.id}.png`} alt="" loading="lazy" />
+              ) : (
+                <Icon name={catIcon(c.id)} />
+              )}
               <span>{c.name}</span>
+              <Icon name="arrow" className="go" />
             </Link>
           ))}
         </div>
