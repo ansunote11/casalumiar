@@ -1,4 +1,4 @@
-import type { ReactNode } from 'react'
+import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import type { Product } from './types'
 import { unitPrice, useCart } from './lib/cart'
@@ -101,6 +101,13 @@ const paths: Record<string, ReactNode> = {
     </>
   ),
   spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />,
+  close: <path d="M6 6l12 12M18 6L6 18" />,
+  zoom: (
+    <>
+      <circle cx="11" cy="11" r="6.5" />
+      <path d="M16 16l4 4M11 8v6M8 11h6" />
+    </>
+  ),
   star: <path d="M12 3.5l2.6 5.3 5.9.9-4.25 4.1 1 5.85L12 16.9l-5.25 2.75 1-5.85L3.5 9.7l5.9-.9z" />,
   // ações do painel
   edit: <path d="M4 20h4L19 9l-4-4L4 16v4zM14 6l4 4" />,
@@ -285,6 +292,41 @@ export function StarInput({ value, onRate, disabled }: { value: number | null; o
           <Icon name="star" />
         </button>
       ))}
+    </div>
+  )
+}
+
+/**
+ * Foto ampliada sobre fundo escuro. Usa a versão inteira da foto (`<nome>-inteira.jpg`, ao lado do
+ * recorte quadrado); se ela não existir, mostra a própria foto do produto.
+ */
+export function PhotoViewer({ src, alt, onClose }: { src: string; alt: string; onClose: () => void }) {
+  const full = src.replace(/\.jpg$/, '-inteira.jpg')
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    const overflow = document.body.style.overflow
+    document.body.style.overflow = 'hidden'
+    return () => {
+      document.removeEventListener('keydown', onKey)
+      document.body.style.overflow = overflow
+    }
+  }, [onClose])
+  return (
+    <div className="viewer" role="dialog" aria-modal="true" aria-label={`Foto: ${alt}`} onClick={onClose}>
+      <button className="viewer-close" onClick={onClose} aria-label="Fechar foto" autoFocus>
+        <Icon name="close" />
+      </button>
+      <img
+        src={full}
+        alt={alt}
+        onClick={(e) => e.stopPropagation()}
+        onError={(e) => {
+          if (e.currentTarget.src !== new URL(src, location.href).href) e.currentTarget.src = src
+        }}
+      />
     </div>
   )
 }

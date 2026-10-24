@@ -438,3 +438,15 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
   .main { padding-top: 34px; }
 }
 .panel, .order, .kpis div { box-shadow: 0 1px 0 rgba(121, 83, 58, .06); }
+
+/* foto do produto clicável + visualizador da foto inteira */
+.pdp-photo { display: block; width: 100%; padding: 0; border: 0; background: none; position: relative; cursor: zoom-in; }
+.pdp-zoom { position: absolute; right: 14px; bottom: 14px; width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; background: rgba(38, 51, 35, .72); color: #f5efe3; }
+.pdp-zoom svg.i { width: 20px; height: 20px; }
+.pdp-photo:focus-visible { outline: 2px solid var(--wood); outline-offset: -4px; }
+.viewer { position: fixed; inset: 0; z-index: 50; background: rgba(18, 24, 16, .94); display: flex; align-items: center; justify-content: center; padding: 56px 12px 24px; cursor: zoom-out; animation: viewer-in .2s ease; }
+.viewer img { max-width: 100%; max-height: 100%; object-fit: contain; border-radius: 10px; cursor: default; box-shadow: 0 12px 40px rgba(0, 0, 0, .5); }
+.viewer-close { position: absolute; top: 10px; right: 10px; width: 44px; height: 44px; border-radius: 50%; border: 0; background: rgba(245, 239, 227, .14); color: #f5efe3; display: flex; align-items: center; justify-content: center; }
+.viewer-close svg.i { width: 22px; height: 22px; }
+@keyframes viewer-in { from { opacity: 0; } to { opacity: 1; } }
+@media (prefers-reduced-motion: reduce) { .viewer { animation: none; } }

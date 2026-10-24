@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { findSize, unitPrice, useCart } from '../lib/cart'
-import { Icon, PageShade, Price, StarInput, Stars, Thumb, TopBar } from '../components'
+import { Icon, PageShade, PhotoViewer, Price, StarInput, Stars, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
 import { myVote, rememberVote } from '../lib/ratings'
 import type { Category, Product, Rating } from '../types'
@@ -18,6 +18,7 @@ export default function ProductPage() {
   const [rating, setRating] = useState<Rating | undefined>(undefined)
   const [vote, setVote] = useState<number | null>(() => (id ? myVote(id) : null))
   const [voteMsg, setVoteMsg] = useState('')
+  const [viewing, setViewing] = useState(false)
 
   useEffect(() => {
     if (id) void api.ratings().then((r) => setRating(r[id]))
@@ -78,8 +79,18 @@ export default function ProductPage() {
         }
       />
       <div className="pdp-hero">
-        <Thumb p={p} big />
+        {p.image_url ? (
+          <button className="pdp-photo" onClick={() => setViewing(true)} aria-label={`Ver foto inteira de ${p.name}`}>
+            <Thumb p={p} big />
+            <span className="pdp-zoom" aria-hidden="true">
+              <Icon name="zoom" />
+            </span>
+          </button>
+        ) : (
+          <Thumb p={p} big />
+        )}
       </div>
+      {viewing && p.image_url && <PhotoViewer src={`${import.meta.env.BASE_URL}${p.image_url}`} alt={p.name} onClose={() => setViewing(false)} />}
       <div className="page pdp" style={{ paddingTop: 20 }}>
         <span className="kicker">{cats.find((c) => c.id === p.category_id)?.name}</span>
         <h2>{p.name}</h2>
