@@ -4,7 +4,7 @@ import { api } from '../lib/api'
 import { BANNERS, WHATSAPP } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
-import { Highlights } from '../HomeSections'
+import { Highlights, ValuesBand } from '../HomeSections'
 import { CategoryRail } from '../CategoryRail'
 import { BannerCarousel } from '../BannerCarousel'
 import type { Category, Product, Ratings } from '../types'
@@ -85,11 +85,9 @@ export default function Welcome() {
           </span>
           <Icon name="arrow" className="go" />
         </a>
-
-        <Link to="/admin" className="admin-link">
-          Área da loja
-        </Link>
       </div>
+
+      <ValuesBand />
     </main>
   )
 }

@@ -52,3 +52,34 @@ export function Highlights({ products, ratings, cats }: { products: Product[]; r
     </section>
   )
 }
+
+// Valores da marca tirados do material da Casa Lumiar (rótulos das velas, catálogos e identidade).
+// Ícones gerados no Canva (Dream Lab), em public/valores/.
+const VALUES = [
+  { icon: 'feito-a-mao', title: 'Feito à mão', text: 'Velas artesanais' },
+  { icon: 'cera-vegetal', title: 'Cera vegetal', text: 'Matéria-prima premium' },
+  { icon: 'alta-perfumaria', title: 'Alta perfumaria', text: 'Inspirados nos clássicos' },
+  { icon: 'atendimento', title: 'Atendimento', text: 'Próximo e com hora marcada' },
+]
+
+/** Faixa de valores em tom terra, logo acima do menu inferior. */
+export function ValuesBand() {
+  return (
+    <section className="values" aria-label="Nossos valores">
+      <ul>
+        {VALUES.map((v) => (
+          <li key={v.icon}>
+            <img src={`${import.meta.env.BASE_URL}valores/${v.icon}.png`} alt="" loading="lazy" />
+            <span>
+              <b>{v.title}</b>
+              <small>{v.text}</small>
+            </span>
+          </li>
+        ))}
+      </ul>
+      <Link to="/admin" className="values-admin">
+        Área da loja
+      </Link>
+    </section>
+  )
+}
