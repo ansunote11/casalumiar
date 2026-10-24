@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { lineName, unitPrice, useCart } from '../lib/cart'
 import { Icon, PageShade, Thumb, TopBar } from '../components'
-import { DELIVERY_REGIONS, MAX_INSTALLMENTS, PICKUP_HOURS, STORE_ADDRESS, WHATSAPP, brl } from '../lib/config'
+import { DELIVERY_REGIONS, MAX_INSTALLMENTS, PICKUP_HOURS, STORE_ADDRESS, STORE_FULL_ADDRESS, WHATSAPP, brl } from '../lib/config'
 import {
   PAY_LABEL,
   addressText,
@@ -252,7 +252,9 @@ export default function Cart() {
         {f.receive === 'retirada' && (
           <div className="info-box">
             <b>Retirada na loja — grátis</b>
-            <p className="small">{STORE_ADDRESS ? `Endereço: ${STORE_ADDRESS}` : 'Enviaremos o endereço da loja pelo WhatsApp.'}</p>
+            <p className="small">
+              {STORE_FULL_ADDRESS ? `Endereço: ${STORE_ADDRESS}` : `${STORE_ADDRESS ? `Em ${STORE_ADDRESS}. ` : ''}Enviaremos o endereço completo pelo WhatsApp.`}
+            </p>
             {PICKUP_HOURS && <p className="small">Horário de retirada: {PICKUP_HOURS}</p>}
             <p className="small">Avisaremos pelo WhatsApp quando o seu pedido estiver pronto.</p>
           </div>

@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { Icon, PageShade, TopBar } from '../components'
-import { DELIVERY_REGIONS, INSTAGRAM, PICKUP_HOURS, STORE_ADDRESS, WHATSAPP, brl } from '../lib/config'
+import { DELIVERY_REGIONS, INSTAGRAM, PICKUP_HOURS, STORE_ADDRESS, STORE_FULL_ADDRESS, WHATSAPP, brl } from '../lib/config'
 import { track } from '../lib/track'
 import { pageMeta, useMeta } from '../lib/useMeta'
 
@@ -42,7 +42,7 @@ export default function About() {
 
         <h3>Retirada na loja</h3>
         <p>
-          Grátis. {STORE_ADDRESS ? `Endereço: ${STORE_ADDRESS}.` : 'O endereço é enviado pelo WhatsApp ao confirmar o pedido.'}
+          Grátis. {STORE_FULL_ADDRESS ? `Endereço: ${STORE_ADDRESS}.` : `${STORE_ADDRESS ? `Em ${STORE_ADDRESS}. ` : ''}O endereço completo é enviado pelo WhatsApp ao confirmar o pedido.`}
           {PICKUP_HOURS && ` Horário: ${PICKUP_HOURS}.`} Avisamos quando o pedido estiver pronto.
         </p>
 

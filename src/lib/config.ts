@@ -36,21 +36,24 @@ export const BANNERS: Banner[] = [
 // Endereço público do site (usado nos links de compartilhamento, sitemap e prévias).
 export const SITE_URL = 'https://casalumiar.vercel.app'
 
-// Retirada na loja. Enquanto ficar vazio, o site avisa que endereço e horário vão pelo WhatsApp.
-export const STORE_ADDRESS = ''
+// Retirada na loja: o que aparece para a cliente (aqui só a cidade; o endereço completo vai pelo WhatsApp).
+// STORE_FULL_ADDRESS = true quando STORE_ADDRESS for o endereço completo (rua, número, bairro).
+export const STORE_ADDRESS = 'Paço do Lumiar - MA'
+export const STORE_FULL_ADDRESS = false
 export const PICKUP_HOURS = ''
 
 /**
  * Regiões de entrega e frete estimado (em reais). `fee: null` = calcular pelo WhatsApp.
  * `bairros` é opcional: os nomes aparecem embaixo da região para a cliente se localizar.
  * Valores iniciais para testar — ajuste conforme as entregas reais.
+ * Distâncias aproximadas a partir do Maiobão (Paço do Lumiar).
  */
 export type DeliveryRegion = { id: string; label: string; fee: number | null; bairros?: string[] }
 export const DELIVERY_REGIONS: DeliveryRegion[] = [
-  { id: 'proxima', label: 'Região próxima (até ~5 km)', fee: 10, bairros: [] },
-  { id: 'intermediaria', label: 'Região intermediária (~5 a 10 km)', fee: 15, bairros: [] },
-  { id: 'intermediaria-distante', label: 'Região intermediária distante (~10 a 15 km)', fee: 22, bairros: [] },
-  { id: 'distante', label: 'Região distante (~15 a 20 km)', fee: 29, bairros: [] },
+  { id: 'proxima', label: 'Maiobão, Paranã, Cohatrac e vizinhos (até ~5 km)', fee: 10, bairros: ['Maiobão', 'Paranã (I, II e III)', 'Pindoba', 'Mocajituba', 'Forquilha', 'Cohatrac'] },
+  { id: 'intermediaria', label: 'Paço (sede), Cohab Anil, Turu e vizinhos (~5 a 10 km)', fee: 15, bairros: ['Paço do Lumiar (sede/Centro)', 'Cohab Anil', 'Turu', 'Habitacional Turu', 'Anil', 'Cohafuma'] },
+  { id: 'intermediaria-distante', label: 'Cohama, Vinhais, Calhau, Raposa e Ribamar (~10 a 15 km)', fee: 22, bairros: ['Cohama', 'Vinhais', 'Bequimão', 'Angelim', "Olho d'Água", 'Calhau', 'Cohajap', 'Raposa', 'São José de Ribamar (Centro)'] },
+  { id: 'distante', label: "Renascença, Centro de São Luís, Ponta d'Areia (~15 a 20 km)", fee: 29, bairros: ['Renascença', 'João Paulo', 'Fátima', 'Monte Castelo', 'São Francisco', "Ponta d'Areia", 'Ponta do Farol', 'Centro de São Luís'] },
   { id: 'consultar', label: 'Não encontrei minha região — calcular pelo WhatsApp', fee: null },
 ]
 
