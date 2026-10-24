@@ -81,3 +81,10 @@ describe('sitemap e robots', () => {
     expect(robots).toContain('Sitemap: https://casalumiar.vercel.app/sitemap.xml')
   })
 })
+
+describe('descrição da prévia', () => {
+  it('não duplica o ponto nem corta letras do fim', () => {
+    expect(productMeta({ ...vela, description: 'Azedinho tropical e alegre.' }, SITE).description).toContain('alegre. Peça')
+    expect(productMeta({ ...vela, description: 'Notas cítricas' }, SITE).description).toContain('Notas cítricas. Peça')
+  })
+})

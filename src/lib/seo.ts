@@ -49,7 +49,7 @@ export function productMeta(p: Product, site: string, categoryName = ''): Meta {
   const high = Math.max(...prices)
   const pix = p.sizes.length ? Math.min(...p.sizes.map((s) => s.pix_price ?? s.price)) : (p.pix_price ?? p.price)
   const price = `${prices.length > 1 ? 'a partir de ' : ''}${money(low)}${pix < low ? ` (${money(pix)} no Pix)` : ''}`
-  const about = (p.description.trim() || [categoryName, p.inspiration && `inspirado em ${p.inspiration}`, p.notes.slice(0, 3).join(', ')].filter(Boolean).join(' · ')).replace(/[.s]+$/, '')
+  const about = (p.description.trim() || [categoryName, p.inspiration && `inspirado em ${p.inspiration}`, p.notes.slice(0, 3).join(', ')].filter(Boolean).join(' · ')).replace(/[.\s]+$/, '')
   const url = abs(site, productPath(p))
   const image = abs(site, p.image_url || DEFAULT_IMAGE)
   const inStock = p.stock > 0 && p.active
