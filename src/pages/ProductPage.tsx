@@ -68,16 +68,15 @@ export default function ProductPage() {
 
   return (
     <>
-      <div className="pdp-hero">
-        <Thumb p={p} big />
-        <div className="nav">
-          <button className="icon-btn solid" onClick={() => nav(-1)} aria-label="Voltar">
-            <Icon name="back" />
-          </button>
-          <button className="icon-btn solid" onClick={share} aria-label="Compartilhar produto">
+      <TopBar
+        right={
+          <button className="icon-btn" onClick={share} aria-label="Compartilhar produto">
             <Icon name="share" />
           </button>
-        </div>
+        }
+      />
+      <div className="pdp-hero">
+        <Thumb p={p} big />
       </div>
       <div className="page pdp" style={{ paddingTop: 20 }}>
         <span className="kicker">{cats.find((c) => c.id === p.category_id)?.name}</span>

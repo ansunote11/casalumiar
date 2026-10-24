@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import type { Product } from './types'
 import { unitPrice, useCart } from './lib/cart'
 import { WHATSAPP, brl } from './lib/config'
+import { BrandLockup } from './brand'
 
 const paths: Record<string, ReactNode> = {
   menu: <path d="M4 7h16M4 12h16M4 17h10" />,
@@ -198,15 +199,30 @@ export function Shell() {
   )
 }
 
+/** Barra de topo das páginas internas: fundo verde, voltar, logomarca original e (por padrão) a sacola. */
 export function TopBar({ right }: { right?: ReactNode }) {
   const nav = useNavigate()
+  const { count } = useCart()
   return (
     <header className="topbar">
       <button className="icon-btn" onClick={() => nav(-1)} aria-label="Voltar">
         <Icon name="back" />
       </button>
-      <h1>CASA LUMIAR</h1>
-      <div className="topbar-right">{right}</div>
+      <Link to="/" className="topbar-brand" aria-label="Casa Lumiar, página inicial">
+        <BrandLockup height={40} color="#B69A62" />
+      </Link>
+      <div className="topbar-right">
+        {right ?? (
+          <Link to="/carrinho" className="icon-btn" aria-label={`Meu pedido, ${count} itens`}>
+            <Icon name="bag" />
+            {count > 0 && (
+              <i className="badge" style={{ top: 6, right: 4 }}>
+                {count}
+              </i>
+            )}
+          </Link>
+        )}
+      </div>
     </header>
   )
 }

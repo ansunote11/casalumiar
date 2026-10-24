@@ -25,6 +25,8 @@ export function Highlights({ products, ratings, cats }: { products: Product[]; r
   const catName = (id: string) => cats.find((c) => c.id === id)?.name ?? ''
   return (
     <section className="highlights" aria-labelledby="destaques-titulo">
+      {/* folhagem dourada (Canva) encostada na curva de cima */}
+      <span className="decor decor-hl" aria-hidden="true" />
       <div className="hl-head">
         <div>
           <span className="kicker">Destaques da Casa Lumiar</span>
@@ -37,14 +39,13 @@ export function Highlights({ products, ratings, cats }: { products: Product[]; r
       <div className="hl-track">
         {list.map((p) => (
           <Link key={p.id} to={`/produto/${p.id}`} className="hl-card">
-            <Thumb p={p} />
+            <span className="hl-photo">
+              <Thumb p={p} />
+            </span>
             <span className="hl-info">
               <b>{p.name}</b>
               <small>{catName(p.category_id)}</small>
               <Stars rating={ratings[p.id]} small />
-            </span>
-            <span className="hl-go" aria-hidden="true">
-              <Icon name="arrow" />
             </span>
           </Link>
         ))}
@@ -56,7 +57,7 @@ export function Highlights({ products, ratings, cats }: { products: Product[]; r
 // Valores da marca tirados do material da Casa Lumiar (rótulos das velas, catálogos e identidade).
 // Ícones gerados no Canva (Dream Lab), em public/valores/.
 const VALUES = [
-  { icon: 'feito-a-mao', title: 'Feito à mão', text: 'Velas artesanais' },
+  { icon: 'feito-a-mao', title: 'Feito à mão', text: 'Produtos artesanais' },
   { icon: 'cera-vegetal', title: 'Cera vegetal', text: 'Matéria-prima premium' },
   { icon: 'alta-perfumaria', title: 'Alta perfumaria', text: 'Inspirados nos clássicos' },
   { icon: 'atendimento', title: 'Atendimento', text: 'Próximo e com hora marcada' },
