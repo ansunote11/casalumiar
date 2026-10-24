@@ -227,7 +227,7 @@ export function TopBar({ right, wave = 'a' }: { right?: ReactNode; wave?: 'a' | 
         <Icon name="back" />
       </button>
       <Link to="/" className="topbar-brand" aria-label="Casa Lumiar, página inicial">
-        <BrandLockup height={40} color="#B69A62" />
+        <BrandLockup height={46} color="#B69A62" />
       </Link>
       <div className="topbar-right">
         {right ?? (

@@ -62,7 +62,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .hero-banner { padding: 0 20px; }
 .home-top .spacer { width: 44px; flex: none; }
 .home-top .brand { margin: 0; flex: 1; display: flex; justify-content: center; min-width: 0; }
-.home-top .brand svg { max-width: 100%; height: auto; max-height: 54px; }
+.home-top .brand svg { max-width: 100%; height: auto; max-height: 62px; }
 /* busca entre o banner e as categorias (pílula clara, como a referência) */
 .home-search { position: relative; z-index: 1; margin-top: 16px; }
 .search-pill { display: flex; align-items: center; gap: 12px; height: 52px; padding: 0 18px; border-radius: 26px; border: 1px solid #ddd2bf; background: #efe6d4; color: #2a2a22; }
@@ -93,7 +93,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .topbar .icon-btn { color: #b69a62; }
 .topbar .badge { background: #b69a62; color: var(--olive-deep); }
 .topbar-brand { flex: 1; display: flex; justify-content: center; min-width: 0; }
-.topbar-brand svg { max-width: 100%; height: auto; max-height: 40px; }
+.topbar-brand svg { max-width: 100%; height: auto; max-height: 46px; }
 .topbar-right { width: 44px; display: flex; justify-content: flex-end; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; }
 .icon-btn.solid { background: var(--bg); }

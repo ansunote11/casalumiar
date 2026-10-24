@@ -28,7 +28,7 @@ export default function Welcome() {
       <header className="home-top">
         <span className="spacer" aria-hidden="true" />
         <h1 className="brand">
-          <BrandLockup height={54} color="#B69A62" />
+          <BrandLockup height={62} color="#B69A62" />
         </h1>
         <Link to="/carrinho" className="icon-btn" aria-label={`Meu pedido, ${count} itens`}>
           <Icon name="bag" />
