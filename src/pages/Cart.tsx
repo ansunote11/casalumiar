@@ -206,6 +206,14 @@ export default function Cart() {
           ))}
         </div>
         <Err k="receive" />
+        {STORE_ADDRESS && (
+          <p className="store-pin">
+            <Icon name="pin" />
+            <span>
+              Estamos localizados em <b>{STORE_ADDRESS}</b>. Os pedidos saem daqui.
+            </span>
+          </p>
+        )}
 
         {f.receive === 'entrega' && (
           <div className="sub-form">

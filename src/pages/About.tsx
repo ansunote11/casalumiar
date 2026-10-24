@@ -47,6 +47,14 @@ export default function About() {
         </p>
 
         <h3>Área de entrega</h3>
+        {STORE_ADDRESS && (
+          <p className="store-pin">
+            <Icon name="pin" />
+            <span>
+              Estamos localizados em <b>{STORE_ADDRESS}</b>. Os pedidos saem daqui.
+            </span>
+          </p>
+        )}
         <ul className="regions">
           {DELIVERY_REGIONS.map((r) => (
             <li key={r.id}>

@@ -502,3 +502,6 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .insta-card small { color: var(--muted); font-size: 12.5px; }
 .insta-card .go { margin-left: auto; color: var(--olive); }
 .about-link { display: block; text-align: center; margin: 12px 0 0; font-size: 13.5px; color: var(--wood-ink); text-decoration: underline; text-underline-offset: 3px; }
+.store-pin { display: flex; align-items: center; gap: 10px; margin: 2px 0 12px; padding: 10px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
+.store-pin svg.i { color: var(--wood-ink); width: 24px; height: 24px; }
+.store-pin b { font-weight: 500; color: var(--olive-deep); }
