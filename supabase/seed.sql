@@ -71,3 +71,19 @@ update products set image_url = 'produtos/vela-lavanda-ambar.jpg' where sku = 'V
 
 -- Destaques iniciais de "Escolhas que encantam": os produtos com foto real (a loja muda no painel).
 update products set featured = (sku in ('PFE-003','PMA-009','VEL-015','DIF-002'));
+
+-- Difusores com fotos novas (files/promo/difusores) e os que ainda não existiam (preço provisório).
+update products set image_url = 'produtos/difusor-clarear.jpg' where sku = 'DIF-001';
+update products set image_url = 'produtos/difusor-conforto-de-crianca.jpg' where sku = 'DIF-002';
+update products set image_url = 'produtos/difusor-delicia-de-morango.jpg' where sku = 'DIF-004';
+update products set image_url = 'produtos/difusor-charme-e-aroma.jpg' where sku = 'DIF-007';
+update products set image_url = 'produtos/difusor-aura-rose.jpg' where sku = 'DIF-010';
+insert into products (sku, name, description, notes, category_id, price, pix_price, stock, featured, image_url)
+select v.* from (values
+  ('DIF-003', 'Difusor Amazônia Viva', 'Frutas amazônicas, energia e frescor tropical.', array['Cupuaçu','Guaraná']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-amazonia-viva.jpg'),
+  ('DIF-005', 'Difusor Explosão Tropical', 'Cítrico vibrante com fundo frutado.', array['Laranja sanguínea','Mandarina verde','Framboesa']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-explosao-tropical.jpg'),
+  ('DIF-006', 'Difusor Império Oriental', 'Especiado e envolvente, de presença marcante.', array['Canela','Tomilho','Lavanda','Rosa','Menta','Musk','Patchouli','Madeira de guaiaco']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-imperio-oriental.jpg'),
+  ('DIF-008', 'Difusor Doce Dourado', 'Baunilha quente e acolhedora.', array['Vanilla']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-doce-dourado.jpg'),
+  ('DIF-009', 'Difusor Doce Lar', 'O cheiro de casa cuidada.', array['Notas doces','Baunilha','Musk','Peônia','Âmbar']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-doce-lar.jpg')
+) as v(sku, name, description, notes, category_id, price, pix_price, stock, featured, image_url)
+where not exists (select 1 from products p where p.sku = v.sku);

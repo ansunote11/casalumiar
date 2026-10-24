@@ -35,9 +35,19 @@ const frag: [string, string[], string][] = [
 const PHOTOS: Record<string, string> = {
   'Vela Lavanda Âmbar': 'produtos/vela-lavanda-ambar.jpg',
   'Difusor Conforto de Criança': 'produtos/difusor-conforto-de-crianca.jpg',
+  // fotos dos difusores (files/promo/difusores)
+  'Difusor Clarear': 'produtos/difusor-clarear.jpg',
+  'Difusor Amazônia Viva': 'produtos/difusor-amazonia-viva.jpg',
+  'Difusor Delícia de Morango': 'produtos/difusor-delicia-de-morango.jpg',
+  'Difusor Explosão Tropical': 'produtos/difusor-explosao-tropical.jpg',
+  'Difusor Império Oriental': 'produtos/difusor-imperio-oriental.jpg',
+  'Difusor Charme & Aroma': 'produtos/difusor-charme-e-aroma.jpg',
+  'Difusor Doce Dourado': 'produtos/difusor-doce-dourado.jpg',
+  'Difusor Doce Lar': 'produtos/difusor-doce-lar.jpg',
+  'Difusor Aura Rosé': 'produtos/difusor-aura-rose.jpg',
 }
 // Difusores que existem além da regra geral (i % 3)
-const EXTRA_DIFUSORES = ['Conforto de Criança']
+const EXTRA_DIFUSORES = ['Conforto de Criança', 'Amazônia Viva', 'Explosão Tropical', 'Império Oriental', 'Doce Dourado', 'Doce Lar']
 
 const aromas: Product[] = frag.flatMap(([name, notes, description], i) => {
   const base = { notes, description, image_url: null, active: true, sizes: [], inspiration: '', pyramid: null }
@@ -57,4 +67,4 @@ const FEATURED = ['Rosa Majestade', 'Magnata', 'Vela Lavanda Âmbar', 'Difusor C
 export const seedProducts: Product[] = [...seedPerfumes, ...aromas].map((p) => ({ ...p, featured: FEATURED.includes(p.name) }))
 
 // Muda quando a lista inicial muda, para o modo demonstração recarregar os produtos.
-export const SEED_VERSION = 4
+export const SEED_VERSION = 5
