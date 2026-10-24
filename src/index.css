@@ -93,7 +93,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .topbar .icon-btn { color: #b69a62; }
 .topbar .badge { background: #b69a62; color: var(--olive-deep); }
 .topbar-brand { flex: 1; display: flex; justify-content: center; min-width: 0; }
-.topbar-brand svg { max-width: 100%; height: auto; max-height: 46px; }
+.topbar-brand svg { max-width: 100%; height: auto; max-height: 62px; }
 .topbar-right { width: 44px; display: flex; justify-content: flex-end; }
 .icon-btn { width: 44px; height: 44px; border-radius: 50%; border: 0; background: transparent; display: flex; align-items: center; justify-content: center; position: relative; }
 .icon-btn.solid { background: var(--bg); }

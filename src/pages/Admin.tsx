@@ -47,7 +47,7 @@ function Login({ onDemo }: { onDemo: () => void }) {
   return (
     <div className="page login">
       <header className="login-top">
-        <BrandLockup height={53} color="#B69A62" />
+        <BrandLockup height={62} color="#B69A62" />
       </header>
       <span className="admin-shade admin-shade--login" aria-hidden="true" />
       <Link to="/" className="muted">
@@ -101,7 +101,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
       <span className="admin-shade" aria-hidden="true" />
       <aside className="side">
         <div className="side-brand">
-          <BrandLockup height={53} color="#d9b98f" />
+          <BrandLockup height={62} color="#d9b98f" />
           <small>Painel da loja</small>
         </div>
         <nav aria-label="Seções do painel">
