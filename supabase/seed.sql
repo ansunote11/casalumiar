@@ -87,3 +87,12 @@ select v.* from (values
   ('DIF-009', 'Difusor Doce Lar', 'O cheiro de casa cuidada.', array['Notas doces','Baunilha','Musk','Peônia','Âmbar']::text[], 'difusores', 54.9, 48, 6, false, 'produtos/difusor-doce-lar.jpg')
 ) as v(sku, name, description, notes, category_id, price, pix_price, stock, featured, image_url)
 where not exists (select 1 from products p where p.sku = v.sku);
+
+-- Fotos novas das velas (files/promo/velas)
+update products set image_url = 'produtos/vela-conforto-de-crianca.jpg' where sku = 'VEL-002';
+update products set image_url = 'produtos/vela-limao-siciliano.jpg' where sku = 'VEL-011';
+update products set image_url = 'produtos/vela-morango-com-champanhe.jpg' where sku = 'VEL-012';
+update products set image_url = 'produtos/vela-orquidea-negra.jpg' where sku = 'VEL-013';
+update products set image_url = 'produtos/vela-maracuja-azedo.jpg' where sku = 'VEL-014';
+update products set image_url = 'produtos/vela-lavanda-ambar.jpg' where sku = 'VEL-015';
+update products set image_url = 'produtos/vela-bosque-boreal.jpg' where sku = 'VEL-016';

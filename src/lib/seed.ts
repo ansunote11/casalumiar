@@ -35,6 +35,13 @@ const frag: [string, string[], string][] = [
 const PHOTOS: Record<string, string> = {
   'Vela Lavanda Âmbar': 'produtos/vela-lavanda-ambar.jpg',
   'Difusor Conforto de Criança': 'produtos/difusor-conforto-de-crianca.jpg',
+  // fotos das velas (files/promo/velas)
+  'Vela Conforto de Criança': 'produtos/vela-conforto-de-crianca.jpg',
+  'Vela Limão Siciliano': 'produtos/vela-limao-siciliano.jpg',
+  'Vela Morango com Champanhe': 'produtos/vela-morango-com-champanhe.jpg',
+  'Vela Orquídea Negra': 'produtos/vela-orquidea-negra.jpg',
+  'Vela Maracujá Azedo': 'produtos/vela-maracuja-azedo.jpg',
+  'Vela Bosque Boreal': 'produtos/vela-bosque-boreal.jpg',
   // fotos dos difusores (files/promo/difusores)
   'Difusor Clarear': 'produtos/difusor-clarear.jpg',
   'Difusor Amazônia Viva': 'produtos/difusor-amazonia-viva.jpg',
@@ -67,4 +74,4 @@ const FEATURED = ['Rosa Majestade', 'Magnata', 'Vela Lavanda Âmbar', 'Difusor C
 export const seedProducts: Product[] = [...seedPerfumes, ...aromas].map((p) => ({ ...p, featured: FEATURED.includes(p.name) }))
 
 // Muda quando a lista inicial muda, para o modo demonstração recarregar os produtos.
-export const SEED_VERSION = 5
+export const SEED_VERSION = 6
