@@ -1,8 +1,10 @@
-import { useEffect, type ReactNode } from 'react'
+import { useEffect, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useNavigate } from 'react-router-dom'
 import type { Product } from './types'
 import { unitPrice, useCart } from './lib/cart'
 import { WHATSAPP, brl } from './lib/config'
+import { copyText, nativeShare, shareLinks } from './lib/share'
+import { track } from './lib/track'
 import { BrandLockup } from './brand'
 
 const paths: Record<string, ReactNode> = {
@@ -102,6 +104,15 @@ const paths: Record<string, ReactNode> = {
   ),
   spark: <path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z" />,
   close: <path d="M6 6l12 12M18 6L6 18" />,
+  link: <path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1 1M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1-1" />,
+  facebook: <path d="M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8.5a.5.5 0 0 1 .5-.5z" />,
+  instagram: (
+    <>
+      <rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+      <circle cx="12" cy="12" r="4" />
+      <circle cx="17.2" cy="6.8" r=".6" />
+    </>
+  ),
   zoom: (
     <>
       <circle cx="11" cy="11" r="6.5" />
@@ -148,8 +159,11 @@ export { BrandLockup, Logo } from './brand'
 
 const tints: Record<string, string> = { velas: '#eadfcb', 'home-spray': '#e3e5d6', difusores: '#f0e4d2', kits: '#e6e3d3' }
 
+/** Caminho de arquivo do site ("produtos/x.jpg") vale em qualquer página, inclusive /produto/... */
+export const assetUrl = (path: string) => (/^(https?:|data:|\/)/.test(path) ? path : `${import.meta.env.BASE_URL}${path}`)
+
 export function Thumb({ p, big }: { p: Pick<Product, 'image_url' | 'category_id' | 'name'>; big?: boolean }) {
-  if (p.image_url) return <img className="thumb" src={p.image_url} alt={p.name} loading="lazy" />
+  if (p.image_url) return <img className="thumb" src={assetUrl(p.image_url)} alt={p.name} loading="lazy" />
   return (
     <div className="thumb" style={{ background: tints[p.category_id] ?? '#eadfcb' }}>
       <svg viewBox="0 0 74 92" width={big ? '38%' : '46%'} fill="none" aria-hidden="true">
@@ -327,6 +341,71 @@ export function PhotoViewer({ src, alt, onClose }: { src: string; alt: string; o
           if (e.currentTarget.src !== new URL(src, location.href).href) e.currentTarget.src = src
         }}
       />
+    </div>
+  )
+}
+
+/** Painel de compartilhar: celular (nativo), copiar link, WhatsApp, Facebook e Instagram (nativo ou copiar). */
+export function ShareSheet({ title, url, onClose }: { title: string; url: string; onClose: () => void }) {
+  const [msg, setMsg] = useState('')
+  const links = shareLinks(title, url)
+  const canShare = typeof navigator.share === 'function'
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') onClose()
+    }
+    document.addEventListener('keydown', onKey)
+    return () => document.removeEventListener('keydown', onKey)
+  }, [onClose])
+  const done = (canal: string, text = '') => {
+    track('share', { canal, produto: title })
+    if (text) setMsg(text)
+  }
+  const copy = async (canal: string, link: string, ok: string) => {
+    done(canal, (await copyText(link)) ? ok : 'Não foi possível copiar. Toque e segure o endereço do navegador para copiar.')
+  }
+  return (
+    <div className="sheet-backdrop" onClick={onClose}>
+      <div className="sheet" role="dialog" aria-modal="true" aria-labelledby="share-title" onClick={(e) => e.stopPropagation()}>
+        <div className="sheet-head">
+          <h3 id="share-title">Compartilhar</h3>
+          <button className="icon-btn" onClick={onClose} aria-label="Fechar">
+            <Icon name="close" />
+          </button>
+        </div>
+        <div className="sheet-actions">
+          {canShare && (
+            <button autoFocus onClick={async () => (await nativeShare({ title, text: `${title} — Casa Lumiar`, url })) && done('nativo')}>
+              <Icon name="share" />
+              Compartilhar pelo celular
+            </button>
+          )}
+          <button autoFocus={!canShare} onClick={() => copy('copiar', url, 'Link copiado!')}>
+            <Icon name="link" />
+            Copiar link
+          </button>
+          <a href={links.whatsapp} target="_blank" rel="noopener noreferrer" onClick={() => done('whatsapp')}>
+            <Icon name="whatsapp" />
+            WhatsApp
+          </a>
+          <a href={links.facebook} target="_blank" rel="noopener noreferrer" onClick={() => done('facebook')}>
+            <Icon name="facebook" />
+            Facebook
+          </a>
+          <button
+            onClick={async () => {
+              if (canShare && (await nativeShare({ title, url: links.instagram }))) return done('instagram')
+              await copy('instagram', links.instagram, 'Link copiado! Cole no seu Story ou na bio do Instagram.')
+            }}
+          >
+            <Icon name="instagram" />
+            {canShare ? 'Instagram (pelo celular)' : 'Copiar link para o Instagram'}
+          </button>
+        </div>
+        <p className="small muted" role="status">
+          {msg}
+        </p>
+      </div>
     </div>
   )
 }

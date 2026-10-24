@@ -3,6 +3,9 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useCart } from '../lib/cart'
 import { CartBar, Icon, PageShade, Price, Stars, Thumb, TopBar } from '../components'
+import { productPath } from '../lib/seo'
+import { track } from '../lib/track'
+import { pageMeta, useMeta } from '../lib/useMeta'
 import type { Category, Product, Ratings } from '../types'
 
 export default function Products() {
@@ -33,6 +36,8 @@ export default function Products() {
 
   const pick = (id: string) => setParams(id ? { cat: id } : {})
   const current = cats.find((c) => c.id === cat)
+  // só o catálogo completo é indexado; filtros e buscas ficam de fora (noindex)
+  useMeta(pageMeta('/produtos', `${current?.name ?? 'Catálogo'} — Casa Lumiar`, undefined, !!(cat || urlQ)))
 
   return (
     <>
@@ -60,7 +65,7 @@ export default function Products() {
         <div className="grid">
           {list.map((p) => (
             <article key={p.id} className="card">
-              <Link to={`/produto/${p.id}`}>
+              <Link to={productPath(p)}>
                 {p.featured && <span className="tag">Destaque</span>}
                 <Thumb p={p} />
                 <h4>{p.name}</h4>
@@ -69,7 +74,10 @@ export default function Products() {
               </Link>
               <div className="card-foot">
                 <Price p={p} />
-                <button className="round" disabled={p.stock <= 0} onClick={() => add(p)} aria-label={`Adicionar ${p.name} ao pedido`}>
+                <button className="round" disabled={p.stock <= 0} onClick={() => {
+                    add(p)
+                    track('add_to_cart', { produto: p.name, quantidade: 1 })
+                  }} aria-label={`Adicionar ${p.name} ao pedido`}>
                   <Icon name="plus" />
                 </button>
               </div>

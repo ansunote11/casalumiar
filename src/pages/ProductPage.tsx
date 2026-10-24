@@ -2,13 +2,16 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { findSize, unitPrice, useCart } from '../lib/cart'
-import { Icon, PageShade, PhotoViewer, Price, StarInput, Stars, Thumb, TopBar } from '../components'
-import { brl } from '../lib/config'
+import { Icon, PageShade, PhotoViewer, Price, ShareSheet, StarInput, Stars, Thumb, TopBar } from '../components'
+import { SITE_URL, brl } from '../lib/config'
+import { findBySlug, productMeta, productPath } from '../lib/seo'
+import { track } from '../lib/track'
+import { useMeta } from '../lib/useMeta'
 import { myVote, rememberVote } from '../lib/ratings'
 import type { Category, Product, Rating } from '../types'
 
 export default function ProductPage() {
-  const { id } = useParams()
+  const { slug = '' } = useParams()
   const nav = useNavigate()
   const { add } = useCart()
   const [p, setP] = useState<Product | null | undefined>(undefined)
@@ -16,12 +19,16 @@ export default function ProductPage() {
   const [qty, setQty] = useState(1)
   const [size, setSize] = useState<string | null>(null)
   const [rating, setRating] = useState<Rating | undefined>(undefined)
-  const [vote, setVote] = useState<number | null>(() => (id ? myVote(id) : null))
+  const [vote, setVote] = useState<number | null>(null)
+  const [sharing, setSharing] = useState(false)
+  const id = p?.id
   const [voteMsg, setVoteMsg] = useState('')
   const [viewing, setViewing] = useState(false)
 
   useEffect(() => {
-    if (id) void api.ratings().then((r) => setRating(r[id]))
+    if (!id) return
+    setVote(myVote(id))
+    void api.ratings().then((r) => setRating(r[id]))
   }, [id])
 
   const rate = async (n: number) => {
@@ -39,12 +46,19 @@ export default function ProductPage() {
 
   useEffect(() => {
     void api.products().then((l) => {
-      const found = l.find((x) => x.id === id) ?? null
+      const found = findBySlug(l, slug)
       setP(found)
       setSize(found?.sizes[0]?.label ?? null)
+      if (found) {
+        track('view_product', { produto: found.name })
+        // link antigo (com id) ou nome alterado: troca para o endereço amigável atual
+        if (productPath(found) !== window.location.pathname) nav(productPath(found) + window.location.search, { replace: true })
+      }
     })
     void api.categories().then(setCats)
-  }, [id])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [slug])
+  useMeta(p ? productMeta(p, SITE_URL, cats.find((c) => c.id === p.category_id)?.name) : null)
 
   if (p === undefined) return <TopBar wave="b" />
   if (p === null)
@@ -55,11 +69,6 @@ export default function ProductPage() {
       </>
     )
 
-  const share = () => {
-    const url = window.location.href
-    if (navigator.share) void navigator.share({ title: p.name, url })
-    else void navigator.clipboard?.writeText(url)
-  }
   const chosen = findSize(p, size)
   const pyramid = p.pyramid && [
     ['Topo', p.pyramid.top],
@@ -73,7 +82,7 @@ export default function ProductPage() {
       <TopBar
         wave="b"
         right={
-          <button className="icon-btn" onClick={share} aria-label="Compartilhar produto">
+          <button className="icon-btn" onClick={() => setSharing(true)} aria-label="Compartilhar produto" aria-haspopup="dialog">
             <Icon name="share" />
           </button>
         }
@@ -90,6 +99,7 @@ export default function ProductPage() {
           <Thumb p={p} big />
         )}
       </div>
+      {sharing && <ShareSheet title={p.name} url={SITE_URL + productPath(p)} onClose={() => setSharing(false)} />}
       {viewing && p.image_url && <PhotoViewer src={`${import.meta.env.BASE_URL}${p.image_url}`} alt={p.name} onClose={() => setViewing(false)} />}
       <div className="page pdp" style={{ paddingTop: 20 }}>
         <span className="kicker">{cats.find((c) => c.id === p.category_id)?.name}</span>
@@ -150,6 +160,7 @@ export default function ProductPage() {
             disabled={p.stock <= 0}
             onClick={() => {
               add(p, qty, size)
+              track('add_to_cart', { produto: p.name, quantidade: qty })
               nav('/carrinho')
             }}
           >

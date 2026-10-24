@@ -1,7 +1,10 @@
 import { useEffect, useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { api } from '../lib/api'
-import { BANNERS, WHATSAPP } from '../lib/config'
+import { BANNERS, INSTAGRAM, SITE_URL, WHATSAPP } from '../lib/config'
+import { siteMeta } from '../lib/seo'
+import { track } from '../lib/track'
+import { useMeta } from '../lib/useMeta'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
 import { Highlights, ValuesBand } from '../HomeSections'
@@ -16,6 +19,7 @@ export default function Welcome() {
   const [q, setQ] = useState('')
   const nav = useNavigate()
   const { count } = useCart()
+  useMeta(siteMeta(SITE_URL))
   useEffect(() => {
     void api.categories().then(setCats)
     void api.products().then(setProducts)
@@ -85,6 +89,19 @@ export default function Welcome() {
           </span>
           <Icon name="arrow" className="go" />
         </a>
+        <a className="insta-card" href={INSTAGRAM} target="_blank" rel="noopener noreferrer" onClick={() => track('instagram_click', { local: 'inicio' })}>
+          <span className="ig" aria-hidden="true">
+            <Icon name="instagram" />
+          </span>
+          <span>
+            <b>Siga a Casa Lumiar no Instagram</b>
+            <small>Veja novidades, lançamentos e bastidores.</small>
+          </span>
+          <Icon name="arrow" className="go" />
+        </a>
+        <Link className="about-link" to="/sobre">
+          Conheça a Casa Lumiar: entrega, retirada e como comprar
+        </Link>
       </div>
 
       <ValuesBand />

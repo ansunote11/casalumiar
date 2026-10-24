@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /carrinho
+Disallow: /api/
+Disallow: /produtos?
+
+Sitemap: https://casalumiar.vercel.app/sitemap.xml

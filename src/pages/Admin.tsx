@@ -6,6 +6,7 @@ import { DEMO_PIN, brl } from '../lib/config'
 import type { Category, Order, OrderStatus, Product, Size } from '../types'
 import { lineName, unitPrice } from '../lib/cart'
 import { BrandLockup, Icon, type IconName } from '../components'
+import { pageMeta, useMeta } from '../lib/useMeta'
 
 type Tab = 'resumo' | 'pedidos' | 'balcao' | 'estoque'
 const plural = (n: number) => `${n} ${n === 1 ? 'pedido' : 'pedidos'}`
@@ -17,6 +18,7 @@ const NEXT: Record<OrderStatus, OrderStatus[]> = {
 }
 
 export default function Admin() {
+  useMeta(pageMeta('/admin', 'Painel — Casa Lumiar', undefined, true))
   const [authed, setAuthed] = useState(() => (demoMode ? sessionStorage.getItem('lumiar:pin') === '1' : false))
 
   useEffect(() => {
@@ -115,8 +117,8 @@ function Panel({ onLogout }: { onLogout: () => void }) {
         </nav>
         <div className="side-foot">
           <small>Link do catálogo</small>
-          <span style={{ wordBreak: 'break-all' }}>{window.location.origin + window.location.pathname}</span>
-          <a href={`https://wa.me/?text=${encodeURIComponent('Conheça o catálogo da Casa Lumiar: ' + window.location.origin + window.location.pathname)}`} target="_blank" rel="noreferrer">
+          <span style={{ wordBreak: 'break-all' }}>{window.location.origin + '/'}</span>
+          <a href={`https://wa.me/?text=${encodeURIComponent('Conheça o catálogo da Casa Lumiar: ' + window.location.origin + '/')}`} target="_blank" rel="noreferrer">
             Compartilhar no WhatsApp
           </a>
           <Link to="/" className="link">Ver loja</Link>

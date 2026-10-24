@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { Icon, Stars, Thumb } from './components'
 import type { Category, Product, Ratings } from './types'
+import { productPath } from './lib/seo'
 
 const MAX = 3
 
@@ -38,7 +39,7 @@ export function Highlights({ products, ratings, cats }: { products: Product[]; r
       </div>
       <div className="hl-track">
         {list.map((p) => (
-          <Link key={p.id} to={`/produto/${p.id}`} className="hl-card">
+          <Link key={p.id} to={productPath(p)} className="hl-card">
             <span className="hl-photo">
               <Thumb p={p} />
             </span>

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { Icon } from './components'
 import type { Banner } from './lib/config'
 
@@ -15,6 +16,7 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = useState(0)
   const pausedUntil = useRef(0)
   const many = banners.length > 1
+  const nav = useNavigate()
   const videos = useRef<(HTMLVideoElement | null)[]>([])
 
   const go = (i: number, smooth = true) => {
@@ -73,7 +75,14 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
             key={b.src}
             href={b.href}
             target={b.href.startsWith('http') ? '_blank' : undefined}
-            rel="noreferrer"
+            rel="noopener noreferrer"
+            onClick={(e) => {
+              // links internos navegam sem recarregar o site
+              if (b.href.startsWith('/')) {
+                e.preventDefault()
+                nav(b.href)
+              }
+            }}
             className="banner"
             aria-roledescription="slide"
             aria-label={`${i + 1} de ${banners.length}: ${b.alt}`}

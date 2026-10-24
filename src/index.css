@@ -450,3 +450,55 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .viewer-close svg.i { width: 22px; height: 22px; }
 @keyframes viewer-in { from { opacity: 0; } to { opacity: 1; } }
 @media (prefers-reduced-motion: reduce) { .viewer { animation: none; } }
+
+/* ---------- checkout (carrinho) ---------- */
+.checkout h3 { margin-top: 18px; margin-bottom: 8px; }
+.checkout h4 { font-size: 17px; margin: 4px 0 8px; }
+.field { display: block; }
+.field > span { display: block; font-size: 13px; color: var(--muted); margin: 0 0 4px 2px; }
+.field > span small { font-size: 12px; opacity: .85; }
+.field-error { color: var(--bad); font-size: 13px; margin: -6px 0 10px 2px; }
+[aria-invalid='true'] { border-color: var(--bad) !important; }
+.seg[aria-invalid='true'] button, .choice-list[aria-invalid='true'] button { border-color: var(--bad); }
+.seg.pay { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.seg.pay button { border-radius: 12px; min-height: 46px; padding: 0 6px; text-transform: none; white-space: normal; line-height: 1.15; }
+.seg.split button { white-space: normal; line-height: 1.15; padding: 0 8px; }
+.sub-form { margin: 4px 0 6px; }
+.choice-list { display: grid; gap: 8px; margin-bottom: 10px; }
+.choice-list button { text-align: left; min-height: 46px; padding: 10px 14px; border-radius: 12px; border: 1px solid var(--line); background: var(--card); }
+.choice-list button.on { border-color: var(--olive); background: var(--olive); color: var(--bg); }
+.info-box { background: var(--sage); border-radius: 12px; padding: 10px 14px; margin: 4px 0 12px; line-height: 1.45; }
+.info-box p { margin: 4px 0 0; }
+.summary { margin: 18px 0 8px; padding: 12px 14px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; }
+.summary > div { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; font-size: 14px; color: var(--muted); }
+.summary dt, .summary dd { margin: 0; }
+.summary dd { text-align: right; color: var(--ink); }
+.summary .good dd { color: var(--olive); }
+.summary .total { margin: 6px 0 0; padding-top: 10px; border-top: 1px solid var(--line); align-items: baseline; }
+
+/* ---------- painel de compartilhar ---------- */
+.sheet-backdrop { position: fixed; inset: 0; z-index: 60; background: rgba(20, 26, 18, .45); display: flex; align-items: flex-end; justify-content: center; }
+.sheet { width: 100%; max-width: 480px; background: var(--bg); border-radius: 22px 22px 0 0; padding: 12px 20px calc(18px + env(safe-area-inset-bottom)); box-shadow: 0 -8px 30px rgba(0, 0, 0, .18); }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; }
+.sheet-head h3 { font-size: 22px; }
+.sheet-actions { display: grid; gap: 8px; margin-top: 6px; }
+.sheet-actions > * { display: flex; align-items: center; gap: 12px; min-height: 50px; padding: 0 16px; border: 1px solid var(--line); border-radius: 14px; background: var(--card); font-size: 15px; text-align: left; }
+.sheet-actions svg.i { color: var(--olive); }
+.sheet p[role='status'] { min-height: 18px; margin: 10px 2px 0; }
+
+/* ---------- sobre + instagram ---------- */
+.about h3 { margin: 20px 0 6px; font-size: 21px; color: var(--olive-deep); }
+.about p { line-height: 1.6; margin: 0 0 8px; }
+.about .lead { font-family: var(--serif); font-style: italic; font-size: 19px; color: var(--wood-ink); }
+.about .steps { padding-left: 20px; line-height: 1.6; margin: 0; }
+.about .regions { list-style: none; padding: 0; margin: 0 0 6px; }
+.about .regions li { display: flex; justify-content: space-between; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.about .regions small { display: block; color: var(--muted); font-size: 12px; }
+.about .regions b { font-weight: 500; white-space: nowrap; }
+.about-cta { display: grid; gap: 10px; margin-top: 22px; }
+.insta-card { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
+.insta-card .ig { width: 44px; height: 44px; border-radius: 14px; flex: none; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #b69a62, #79533a); }
+.insta-card b { display: block; font-weight: 500; }
+.insta-card small { color: var(--muted); font-size: 12.5px; }
+.insta-card .go { margin-left: auto; color: var(--olive); }
+.about-link { display: block; text-align: center; margin: 12px 0 0; font-size: 13.5px; color: var(--wood-ink); text-decoration: underline; text-underline-offset: 3px; }
