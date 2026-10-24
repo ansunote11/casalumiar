@@ -94,13 +94,21 @@ export default function Welcome() {
             <Icon name="instagram" />
           </span>
           <span>
-            <b>Siga a Casa Lumiar no Instagram</b>
-            <small>Veja novidades, lançamentos e bastidores.</small>
+            <b>Siga no Instagram</b>
+            <small>Novidades, lançamentos e bastidores.</small>
           </span>
           <Icon name="arrow" className="go" />
         </a>
-        <Link className="about-link" to="/sobre">
-          Conheça a Casa Lumiar: entrega, retirada e como comprar
+        <Link className="insta-card about-card" to="/sobre">
+          <span className="ig" aria-hidden="true">
+            {/* casinha com coração (Canva Dream Lab) */}
+            <img src={`${import.meta.env.BASE_URL}icones/casa-coracao.png`} alt="" width={32} height={32} />
+          </span>
+          <span>
+            <b>Conheça a Casa Lumiar</b>
+            <small>Entrega, retirada e como comprar.</small>
+          </span>
+          <Icon name="arrow" className="go" />
         </Link>
       </div>
 

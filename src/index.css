@@ -498,10 +498,13 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .about-cta { display: grid; gap: 10px; margin-top: 22px; }
 .insta-card { display: flex; align-items: center; gap: 14px; margin: 14px 0 0; padding: 14px 16px; border-radius: 18px; background: var(--card); border: 1px solid var(--line); }
 .insta-card .ig { width: 44px; height: 44px; border-radius: 14px; flex: none; display: flex; align-items: center; justify-content: center; color: #fff; background: linear-gradient(135deg, #b69a62, #79533a); }
-.insta-card b { display: block; font-weight: 500; }
-.insta-card small { color: var(--muted); font-size: 12.5px; }
+.insta-card b { display: block; font-weight: 600; font-size: 16px; color: var(--olive-deep); }
+.insta-card small { color: var(--muted); font-size: 13px; font-weight: 300; }
 .insta-card .go { margin-left: auto; color: var(--olive); }
 .about-link { display: block; text-align: center; margin: 12px 0 0; font-size: 13.5px; color: var(--wood-ink); text-decoration: underline; text-underline-offset: 3px; }
 .store-pin { display: flex; align-items: center; gap: 10px; margin: 2px 0 12px; padding: 10px 14px; border-radius: 12px; background: var(--card); border: 1px solid var(--line); font-size: 14px; line-height: 1.4; }
 .store-pin svg.i { color: var(--wood-ink); width: 24px; height: 24px; }
 .store-pin b { font-weight: 500; color: var(--olive-deep); }
+.about-card { margin-top: 10px; }
+.about-card .ig { background: linear-gradient(135deg, #596044, #263323); }
+.about-card .ig img { width: 32px; height: 32px; display: block; }
