@@ -238,7 +238,7 @@ svg.i { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-widt
 .banner-dots button.on::before { width: 18px; background: #faf7f1; }
 /* Banner sempre no tamanho original da arte (proporção 3:2, largura total), sem corte. */
 .welcome { --banner-h: calc((min(100vw, 480px) - 40px) / 1.5); }
-.banner img { display: block; width: 100%; object-fit: cover; object-position: center; height: var(--banner-h); }
+.banner img, .banner video { display: block; width: 100%; object-fit: cover; object-position: center; height: var(--banner-h); }
 
 /* perfumes: inspiração, tamanhos e pirâmide olfativa */
 .price .from { font-size: 11px; font-weight: 400; color: var(--muted); }

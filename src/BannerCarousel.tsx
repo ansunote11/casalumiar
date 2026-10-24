@@ -15,11 +15,13 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = useState(0)
   const pausedUntil = useRef(0)
   const many = banners.length > 1
+  const videos = useRef<(HTMLVideoElement | null)[]>([])
 
   const go = (i: number, smooth = true) => {
     const el = track.current
     if (!el) return
     const n = (i + banners.length) % banners.length
+    setIndex(n)
     el.scrollTo({ left: n * el.clientWidth, behavior: smooth ? 'smooth' : 'auto' })
   }
   const userGo = (i: number) => {
@@ -32,11 +34,23 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
     const t = setInterval(() => {
       if (document.hidden || Date.now() < pausedUntil.current) return
       const el = track.current
-      if (el) go(Math.round(el.scrollLeft / el.clientWidth) + 1)
+      if (!el) return
+      const cur = Math.round(el.scrollLeft / el.clientWidth)
+      if (banners[cur]?.video) return // vídeo fica em loop até a pessoa passar
+      go(cur + 1)
     }, INTERVAL)
     return () => clearInterval(t)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [many, banners.length])
+
+  // só o vídeo do slide visível fica rodando (é mudo e calmo: roda mesmo com "reduzir movimento")
+  useEffect(() => {
+    videos.current.forEach((v, i) => {
+      if (!v) return
+      if (i === index) void v.play().catch(() => {})
+      else v.pause()
+    })
+  }, [index])
 
   const pause = () => (pausedUntil.current = Date.now() + RESUME_AFTER)
 
@@ -65,7 +79,25 @@ export function BannerCarousel({ banners }: { banners: Banner[] }) {
             aria-label={`${i + 1} de ${banners.length}: ${b.alt}`}
             tabIndex={i === index ? 0 : -1}
           >
-            <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1200} height={800} loading={i === 0 ? 'eager' : 'lazy'} />
+            {b.video ? (
+              <video
+                ref={(v) => {
+                  videos.current[i] = v
+                }}
+                src={`${import.meta.env.BASE_URL}${b.video}`}
+                poster={`${import.meta.env.BASE_URL}${b.src}`}
+                width={1200}
+                height={800}
+                muted
+                loop
+                playsInline
+                autoPlay
+                preload={i === 0 ? 'auto' : 'metadata'}
+                aria-hidden="true"
+              />
+            ) : (
+              <img src={`${import.meta.env.BASE_URL}${b.src}`} alt={b.alt} width={1200} height={800} loading={i === 0 ? 'eager' : 'lazy'} />
+            )}
           </a>
         ))}
       </div>

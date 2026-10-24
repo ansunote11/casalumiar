@@ -7,8 +7,16 @@ export const DEMO_PIN = 'lumiar'
 
 // Banners da página inicial (imagens 1200x800 em public/banners). Giram sozinhos; com setas e pontinhos.
 // `href` começando com # abre uma página do catálogo; com https abre em outra aba (ex.: WhatsApp).
-export type Banner = { src: string; alt: string; href: string }
+// Com `video`, o slide é um vídeo mudo em loop (src vira a capa enquanto carrega) e o
+// carrossel não sai dele sozinho: fica passando até a pessoa ir para o próximo.
+export type Banner = { src: string; alt: string; href: string; video?: string }
 export const BANNERS: Banner[] = [
+  {
+    src: 'banners/vela-kids.jpg',
+    video: 'banners/vela-kids.mp4',
+    alt: 'Vela Conforto de Criança: aroma suave de baunilha, cera vegetal feita à mão. Crie memórias no seu lar.',
+    href: `#/produtos?q=${encodeURIComponent('Vela Conforto de Criança')}`,
+  },
   {
     src: 'banners/amazonia-viva.jpg',
     alt: 'O sucesso voltou! Amazônia Viva, aromatizador de ambientes com notas de guaraná e cupuaçu.',
