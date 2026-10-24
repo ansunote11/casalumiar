@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { useNavigate, useParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { findSize, unitPrice, useCart } from '../lib/cart'
-import { Icon, Price, StarInput, Stars, Thumb, TopBar } from '../components'
+import { Icon, PageShade, Price, StarInput, Stars, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
 import { myVote, rememberVote } from '../lib/ratings'
 import type { Category, Product, Rating } from '../types'
@@ -45,11 +45,11 @@ export default function ProductPage() {
     void api.categories().then(setCats)
   }, [id])
 
-  if (p === undefined) return <TopBar />
+  if (p === undefined) return <TopBar wave="b" />
   if (p === null)
     return (
       <>
-        <TopBar />
+        <TopBar wave="b" />
         <p className="muted center">Produto não encontrado.</p>
       </>
     )
@@ -68,7 +68,9 @@ export default function ProductPage() {
 
   return (
     <>
+      <PageShade side="left" />
       <TopBar
+        wave="b"
         right={
           <button className="icon-btn" onClick={share} aria-label="Compartilhar produto">
             <Icon name="share" />

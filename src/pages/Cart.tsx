@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { api } from '../lib/api'
 import { lineName, unitPrice, useCart } from '../lib/cart'
-import { Icon, Thumb, TopBar } from '../components'
+import { Icon, PageShade, Thumb, TopBar } from '../components'
 import { brl } from '../lib/config'
 import { whatsappLink } from '../lib/whatsapp'
 import type { Delivery } from '../types'
@@ -53,7 +53,8 @@ export default function Cart() {
   if (lines.length === 0)
     return (
       <>
-        <TopBar />
+        <TopBar wave="c" />
+        <PageShade side="flip" />
         <div className="page center">
           <h2 className="page-title">Meu pedido</h2>
           <p className="muted">Seu pedido está vazio.</p>
@@ -66,7 +67,8 @@ export default function Cart() {
 
   return (
     <>
-      <TopBar />
+      <TopBar wave="c" />
+        <PageShade side="flip" />
       <div className="page">
         <h2 className="page-title" style={{ marginBottom: 14 }}>
           Meu pedido

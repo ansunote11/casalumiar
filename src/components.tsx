@@ -199,12 +199,23 @@ export function Shell() {
   )
 }
 
-/** Barra de topo das páginas internas: fundo verde, voltar, logomarca original e (por padrão) a sacola. */
-export function TopBar({ right }: { right?: ReactNode }) {
+/**
+ * Folhas desfocadas ao fundo da página (Canva Dream Lab). Cada página usa uma posição diferente
+ * para a identidade se repetir sem ficar igual: à direita, à esquerda ou de cabeça para baixo.
+ */
+export function PageShade({ side }: { side: 'right' | 'left' | 'flip' }) {
+  return <span className={`page-shade page-shade--${side}`} aria-hidden="true" />
+}
+
+/**
+ * Barra de topo das páginas internas: fundo verde, voltar, logomarca original e (por padrão) a sacola.
+ * Termina numa onda suave; `wave` escolhe uma das formas para cada página ter a sua.
+ */
+export function TopBar({ right, wave = 'a' }: { right?: ReactNode; wave?: 'a' | 'b' | 'c' }) {
   const nav = useNavigate()
   const { count } = useCart()
   return (
-    <header className="topbar">
+    <header className={`topbar wave-${wave}`}>
       <button className="icon-btn" onClick={() => nav(-1)} aria-label="Voltar">
         <Icon name="back" />
       </button>

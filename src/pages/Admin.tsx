@@ -5,7 +5,7 @@ import { orderText } from '../lib/whatsapp'
 import { DEMO_PIN, brl } from '../lib/config'
 import type { Category, Order, OrderStatus, Product, Size } from '../types'
 import { lineName, unitPrice } from '../lib/cart'
-import { BrandLockup, Icon, Logo, type IconName } from '../components'
+import { BrandLockup, Icon, type IconName } from '../components'
 
 type Tab = 'resumo' | 'pedidos' | 'balcao' | 'estoque'
 const plural = (n: number) => `${n} ${n === 1 ? 'pedido' : 'pedidos'}`
@@ -46,8 +46,10 @@ function Login({ onDemo }: { onDemo: () => void }) {
   }
   return (
     <div className="page login">
-      <Logo size={44} />
-      <br />
+      <header className="login-top">
+        <BrandLockup height={46} color="#B69A62" />
+      </header>
+      <span className="admin-shade admin-shade--login" aria-hidden="true" />
       <Link to="/" className="muted">
         ← Voltar à loja
       </Link>
@@ -96,6 +98,7 @@ function Panel({ onLogout }: { onLogout: () => void }) {
 
   return (
     <div className="admin">
+      <span className="admin-shade" aria-hidden="true" />
       <aside className="side">
         <div className="side-brand">
           <BrandLockup height={46} color="#d9b98f" />

@@ -2,7 +2,7 @@ import { useEffect, useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import { api } from '../lib/api'
 import { useCart } from '../lib/cart'
-import { CartBar, Icon, Price, Stars, Thumb, TopBar } from '../components'
+import { CartBar, Icon, PageShade, Price, Stars, Thumb, TopBar } from '../components'
 import type { Category, Product, Ratings } from '../types'
 
 export default function Products() {
@@ -36,7 +36,8 @@ export default function Products() {
 
   return (
     <>
-      <TopBar />
+      <TopBar wave="a" />
+      <PageShade side="right" />
       <div className="page has-cartbar">
         <h2 className="page-title">{current?.name ?? 'Catálogo'}</h2>
         <p className="page-sub">{list.length} {list.length === 1 ? 'produto' : 'produtos'} · peça pelo WhatsApp</p>

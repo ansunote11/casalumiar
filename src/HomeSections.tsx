@@ -2,20 +2,20 @@ import { Link } from 'react-router-dom'
 import { Icon, Stars, Thumb } from './components'
 import type { Category, Product, Ratings } from './types'
 
-const MAX = 8
+const MAX = 3
 
 /**
- * Escolhe os produtos de "Escolhas que encantam": primeiro os que a loja marcou como destaque,
- * depois os mais bem avaliados, e completa com produtos que têm foto.
+ * Escolhe os 3 produtos de "Escolhas que encantam": os de maior média de estrelas (desempate pela
+ * quantidade de avaliações). Enquanto faltar avaliação, completa com os destaques da loja e,
+ * por fim, com produtos que têm foto.
  */
 export function pickHighlights(products: Product[], ratings: Ratings) {
   const active = products.filter((p) => p.active)
-  const score = (p: Product) => ratings[p.id]?.avg ?? 0
-  const featured = active.filter((p) => p.featured).sort((a, b) => Number(!!b.image_url) - Number(!!a.image_url) || score(b) - score(a))
-  const rated = active.filter((p) => ratings[p.id]?.count).sort((a, b) => score(b) - score(a) || ratings[b.id].count - ratings[a.id].count)
+  const rated = active.filter((p) => ratings[p.id]?.count).sort((a, b) => ratings[b.id].avg - ratings[a.id].avg || ratings[b.id].count - ratings[a.id].count)
+  const featured = active.filter((p) => p.featured).sort((a, b) => Number(!!b.image_url) - Number(!!a.image_url))
   const withPhoto = active.filter((p) => p.image_url)
   const out: Product[] = []
-  for (const p of [...featured, ...rated, ...withPhoto]) if (out.length < MAX && !out.includes(p)) out.push(p)
+  for (const p of [...rated, ...featured, ...withPhoto]) if (out.length < MAX && !out.includes(p)) out.push(p)
   return out
 }
 
