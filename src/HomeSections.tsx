@@ -1,25 +1,6 @@
 import { Link } from 'react-router-dom'
-import { Icon, Stars, Thumb, catIcon } from './components'
+import { Icon, Stars, Thumb } from './components'
 import type { Category, Product, Ratings } from './types'
-
-// Ícones das categorias gerados no Canva (Dream Lab), em public/icones/<id>.png
-const ICONS = ['perfumes-femininos', 'perfumes-masculinos', 'body-splash', 'velas', 'home-spray', 'difusores', 'kits']
-
-/** Categorias em ícones fixos (círculo bege com traço dourado e o nome embaixo). */
-export function CategoryIcons({ cats }: { cats: Category[] }) {
-  return (
-    <nav className="cat-icons" aria-label="Categorias">
-      {cats.map((c) => (
-        <Link key={c.id} to={`/produtos?cat=${c.id}`} className="cat-icon">
-          <span className="circle">
-            {ICONS.includes(c.id) ? <img src={`${import.meta.env.BASE_URL}icones/${c.id}.png`} alt="" loading="lazy" /> : <Icon name={catIcon(c.id)} />}
-          </span>
-          <span className="label">{c.name}</span>
-        </Link>
-      ))}
-    </nav>
-  )
-}
 
 const MAX = 8
 

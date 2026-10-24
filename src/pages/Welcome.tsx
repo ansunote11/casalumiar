@@ -4,7 +4,8 @@ import { api } from '../lib/api'
 import { BANNERS, WHATSAPP } from '../lib/config'
 import { useCart } from '../lib/cart'
 import { BrandLockup, Icon } from '../components'
-import { CategoryIcons, Highlights } from '../HomeSections'
+import { Highlights } from '../HomeSections'
+import { CategoryRail } from '../CategoryRail'
 import { BannerCarousel } from '../BannerCarousel'
 import type { Category, Product, Ratings } from '../types'
 
@@ -27,7 +28,7 @@ export default function Welcome() {
       <header className="home-top">
         <span className="spacer" aria-hidden="true" />
         <h1 className="brand">
-          <BrandLockup height={54} color="#D2B48B" />
+          <BrandLockup height={54} color="#B69A62" />
         </h1>
         <Link to="/carrinho" className="icon-btn" aria-label={`Meu pedido, ${count} itens`}>
           <Icon name="bag" />
@@ -39,12 +40,16 @@ export default function Welcome() {
         </Link>
       </header>
 
+      {/* adereços botânicos (Canva Dream Lab) que aparecem por trás das pontas do banner */}
+      <span className="decor decor-hero-left" aria-hidden="true" />
+      <span className="decor decor-hero-right" aria-hidden="true" />
       {BANNERS.length > 0 && (
         <div className="hero-banner">
           <BannerCarousel banners={BANNERS} />
         </div>
       )}
       </div>
+      <span className="decor decor-shadow" aria-hidden="true" />
 
       <div className="page" style={{ paddingTop: 0, paddingBottom: 0 }}>
         <form
@@ -61,8 +66,13 @@ export default function Welcome() {
           </label>
         </form>
 
-        <CategoryIcons cats={cats} />
+        <div className="section-head">
+          <h2>Categorias</h2>
+          <Link to="/produtos">Ver tudo</Link>
+        </div>
       </div>
+
+      <CategoryRail cats={cats} />
 
       <Highlights products={products} ratings={ratings} cats={cats} />
 

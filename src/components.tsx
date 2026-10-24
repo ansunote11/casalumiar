@@ -146,10 +146,10 @@ export function Thumb({ p, big }: { p: Pick<Product, 'image_url' | 'category_id'
     <div className="thumb" style={{ background: tints[p.category_id] ?? '#eadfcb' }}>
       <svg viewBox="0 0 74 92" width={big ? '38%' : '46%'} fill="none" aria-hidden="true">
         <path d="M37 20c-4-4-3-10 0-14 3 4 4 10 0 14z" fill="#d9b98f" />
-        <path d="M37 20v8" stroke="#1d3412" strokeWidth="1.4" />
-        <rect x="10" y="28" width="54" height="60" rx="8" fill="#faf7f1" stroke="#1d3412" strokeWidth="1.4" />
+        <path d="M37 20v8" stroke="#263323" strokeWidth="1.4" />
+        <rect x="10" y="28" width="54" height="60" rx="8" fill="#faf7f1" stroke="#263323" strokeWidth="1.4" />
         <rect x="18" y="48" width="38" height="22" rx="2" fill="#fff" stroke="#a8743f" />
-        <text x="37" y="63" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize="8" fontWeight="600" fill="#1d3412" letterSpacing="1">LUMIAR</text>
+        <text x="37" y="63" textAnchor="middle" fontFamily="Cormorant Garamond, serif" fontSize="8" fontWeight="600" fill="#263323" letterSpacing="1">LUMIAR</text>
       </svg>
     </div>
   )
