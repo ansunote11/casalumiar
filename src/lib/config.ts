@@ -1,5 +1,5 @@
 // Número da loja (formato internacional, sem + nem espaços)
-export const WHATSAPP = '5598981616144'
+export const WHATSAPP = '5598984011690' // (98) 9 8401-1690
 export const STORE_NAME = 'Casa Lumiar'
 export const INSTAGRAM = 'https://www.instagram.com/casalumiar_/'
 // PIN do painel no modo demonstração (sem Supabase configurado)
